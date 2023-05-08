@@ -4,7 +4,7 @@ import 'package:moviedb/domain/api_client/api_client.dart';
 import 'package:moviedb/domain/entity/tv_show_details_credits.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
-import 'package:moviedb/widgets/au/tv_show_details_widget/tv_show_details_model.dart';
+import 'package:moviedb/widgets/auth/tv_show_details_widget/tv_show_details_model.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
 
 class TvShowDetailsMainInfoWidget extends StatelessWidget {

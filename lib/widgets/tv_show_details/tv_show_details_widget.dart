@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/Library/Widgets/inherited/provider.dart';
 import 'package:moviedb/widgets/app/my_app_model.dart';
-import 'package:moviedb/widgets/au/tv_show_details_widget/tv_show_details_model.dart';
+import 'package:moviedb/widgets/auth/tv_show_details_widget/tv_show_details_model.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_info_widget.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_screen_cast_widget.dart';

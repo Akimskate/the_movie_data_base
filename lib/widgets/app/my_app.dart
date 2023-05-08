@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/Library/Widgets/inherited/provider.dart';
 import 'package:moviedb/Theme/app_colors.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
-import 'package:moviedb/widgets/app/my_app_model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MyApp extends StatelessWidget {
@@ -11,7 +9,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model =Provider.read<MyAppModel>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -35,7 +32,7 @@ class MyApp extends StatelessWidget {
         Locale('ru', 'RU'),
       ],
       routes: mainNavigation.routes,
-      initialRoute: mainNavigation.initialRoute(model?.isAuth == true),
+      initialRoute: MainNavigationRouteNames.loaderWidget,
       onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }
