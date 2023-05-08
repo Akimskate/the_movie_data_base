@@ -8,6 +8,9 @@ import 'package:moviedb/widgets/loader_widget/loader_view_model.dart';
 import 'package:moviedb/widgets/loader_widget/loader_widget.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_widget.dart';
+import 'package:moviedb/widgets/movie_trailers/movie_trailer_widget.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
 import 'package:provider/provider.dart';
 
 class ScreenFactory {
@@ -20,8 +23,8 @@ class ScreenFactory {
   }
 
   Widget makeAuth() {
-    return OldProvider.NotifierProvider(
-          create: () => AuthModel(),
+    return ChangeNotifierProvider(
+          create: (_) => AuthViewModel(),
           child: const AuthWidget(),
         );
   }
@@ -38,5 +41,16 @@ class ScreenFactory {
             create: () => MovieDetailsModel(movieId),
             child: const MovieDetailsWidget(),
           );
+  }
+
+  Widget makeShowDetails(int showId) {
+    return OldProvider.NotifierProvider(
+            create: () => TvShowDetailsModel(showId),
+            child: const TvShowDetailsWidget(),
+          );
+  }
+
+  Widget makeYOUTubeTrailer(String youtubeKey){
+    return MovieTrailerWidget(youtubeKey: youtubeKey);
   }
 }

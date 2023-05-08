@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/Library/Widgets/inherited/provider.dart';
 import 'package:moviedb/domain/factoryes/screen_factory.dart';
-import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
-import 'package:moviedb/widgets/movie_details_widget/movie_details_widget.dart';
-import 'package:moviedb/widgets/movie_trailers/movie_trailer_widget.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
+
 
 abstract class MainNavigationRouteNames {
   static const loaderWidget = '/';
@@ -37,20 +32,21 @@ class MainNavigation {
         final arguments = settings.arguments;
         final youtubeKey = arguments is String ? arguments : '';
         return MaterialPageRoute(
-          builder: (context) => MovieTrailerWidget(youtubeKey: youtubeKey),
+          builder: (_) => _screenFactory.makeYOUTubeTrailer(youtubeKey),
         );
       case MainNavigationRouteNames.showDetails:
         final arguments = settings.arguments;
         final showId = arguments is int ? arguments : 0;
         return MaterialPageRoute(
-          builder: (context) => NotifierProvider(
-            create: () => TvShowDetailsModel(showId),
-            child: const TvShowDetailsWidget(),
-          ),
+          builder: (_) => _screenFactory.makeShowDetails(showId),
         );
       default:
         const widget = Text('Navigation Error!!!!!!!!');
         return MaterialPageRoute(builder: (context) => widget);
     }
   }
+  static void resetNavigation(BuildContext context) {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        MainNavigationRouteNames.loaderWidget, (route) => false);
+  } 
 }

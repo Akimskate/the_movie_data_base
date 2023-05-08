@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/domain/api_client/api_client.dart';
-import 'package:moviedb/domain/data_providers/session_data_provider.dart';
+import 'package:moviedb/domain/services/auth_service.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
 
-class AuthModel extends ChangeNotifier {
-  final _apiCliet = ApiClient();
-  final _sessionDataProvider = SessionDataProvider();
+class AuthViewModel extends ChangeNotifier {
+  final _authService = AuthService();
 
   final loginTextController = TextEditingController();
   final passwordTextController = TextEditingController();
@@ -17,54 +16,53 @@ class AuthModel extends ChangeNotifier {
   bool get canStartAuth => !_isAuthProgress;
   bool get isAuthProgress => _isAuthProgress;
 
-  Future<void> auth(BuildContext context) async {
-    final login = loginTextController.text;
-    final password = passwordTextController.text;
-    if (login.isEmpty || password.isEmpty) {
-      _errorMessage = 'Fill your loggin and password';
-      notifyListeners();
-      return;
-    }
-    _errorMessage = null;
-    _isAuthProgress = true;
-    notifyListeners();
+  bool _isValid(String login, String password) =>
+      login.isNotEmpty && password.isNotEmpty;
 
-    String? sessionId;
-    int? accountId;
+  Future<String?> _login(String login, String password) async {
     try {
-      sessionId = await _apiCliet.auth(
-        username: login,
-        password: password,
-      );
-    accountId = await _apiCliet.getAccountInfo(sessionId);
+      await _authService.login(login, password);
     } on ApiClientException catch (e) {
       switch (e.type) {
         case ApiClientExceptionType.network:
-          _errorMessage = 'Server unawailable';
-          break;
+          return 'Server unawailable';
         case ApiClientExceptionType.auth:
-          _errorMessage = 'Wrong login or password! ! !';
-          break;
-        case ApiClientExceptionType.others:
-          _errorMessage = 'Somethig wrong, try later';
-          break;
+          return 'Wrong login or password! ! !';
         case ApiClientExceptionType.sessionExpired:
-          break;
+        case ApiClientExceptionType.others:
+          return 'Somethig wrong, try later';
       }
+    } catch (e) {
+      return 'Unknown Error. Please try again later';
     }
-    _isAuthProgress = false;
-    if (_errorMessage != null) {
-      notifyListeners();
+    return null;
+  }
+
+  Future<void> auth(BuildContext context) async {
+    final login = loginTextController.text;
+    final password = passwordTextController.text;
+
+    if (!_isValid(login, password)) {
+      _updateState('Fill your loggin and password', false);
       return;
     }
-    if (sessionId == null || accountId == null) {
-      _errorMessage = 'Unknown Error. Please try again later';
-      notifyListeners();
+
+    _updateState(null, true);
+
+    _errorMessage = await _login(login, password);
+    if (_errorMessage == null) {
+      MainNavigation.resetNavigation(context);
+    } else {
+      _updateState(_errorMessage, false);
+    }
+  }
+
+  void _updateState(String? errorMessage, bool isAuthProgress) {
+    if (_errorMessage == errorMessage && _isAuthProgress == isAuthProgress) {
       return;
     }
-    await _sessionDataProvider.setSessionId(sessionId);
-    await _sessionDataProvider.setAccountId(accountId);
-    Navigator.of(context)
-        .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
+    _errorMessage = errorMessage;
+    _isAuthProgress = isAuthProgress;
+    notifyListeners();
   }
 }
