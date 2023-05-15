@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/domain/api_client/api_client.dart';
-import 'package:moviedb/domain/services/auth_service.dart';
-import 'package:moviedb/navigation/main_navigation.dart';
+import 'package:moviedb/domain/api_client/api_client_extension.dart';
+
+
+import '../../domain/services/auth_service.dart';
+import '../../navigation/main_navigation.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final _authService = AuthService();
 
-  final loginTextController = TextEditingController();
-  final passwordTextController = TextEditingController();
+  final loginTextController = TextEditingController(text: 'akimskate');
+  final passwordTextController = TextEditingController(text: '7B7L!WHimcY8K8!');
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;

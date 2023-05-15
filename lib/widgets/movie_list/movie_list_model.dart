@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:moviedb/domain/api_client/api_client.dart';
+import 'package:moviedb/domain/api_client/api_client_movie_and_show.dart';
 import 'package:moviedb/domain/entity/movie.dart';
 import 'package:moviedb/domain/entity/popular_movie_response.dart';
 import 'package:moviedb/navigation/main_navigation.dart';

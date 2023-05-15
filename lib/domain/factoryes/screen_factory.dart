@@ -1,3 +1,5 @@
+// ignore_for_file: library_prefixes
+
 import 'package:flutter/material.dart';
 import 'package:moviedb/Library/Widgets/inherited/provider.dart' as OldProvider;
 import 'package:moviedb/widgets/auth/auth_model.dart';

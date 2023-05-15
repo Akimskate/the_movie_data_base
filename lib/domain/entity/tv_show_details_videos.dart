@@ -26,7 +26,7 @@ class Result {
   final int size;
   final String type;
   final bool? official;
-  final String published_at;
+  final String publishedAt;
   final String id;
   Result({
     required this.iso6391,
@@ -37,7 +37,7 @@ class Result {
     required this.size,
     required this.type,
     required this.official,
-    required this.published_at,
+    required this.publishedAt,
     required this.id,
   });
 factory Result.fromJson(Map<String, dynamic> json) =>

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/Library/Widgets/inherited/provider.dart';
-import 'package:moviedb/domain/api_client/api_client.dart';
+import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/domain/entity/tv_show_details_credits.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
-import 'package:moviedb/widgets/auth/tv_show_details_widget/tv_show_details_model.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
 
 class TvShowDetailsMainInfoWidget extends StatelessWidget {
@@ -83,14 +82,14 @@ class _TopPosterWidget extends StatelessWidget {
       child: Stack(
         children: [
           backdropPath != null
-              ? Image.network(ApiClient.imageUrl(backdropPath))
+              ? Image.network(ImageDownloader.imageUrl(backdropPath))
               : const SizedBox.shrink(),
           Positioned(
             top: 20,
             left: 20,
             bottom: 20,
             child: posterPath != null
-                ? Image.network(ApiClient.imageUrl(posterPath))
+                ? Image.network(ImageDownloader.imageUrl(posterPath))
                 : const SizedBox.shrink(),
           ),
           Positioned(
@@ -219,10 +218,6 @@ class _SummeryWidget extends StatelessWidget {
 
 
     final episodeRunTime = model.showDetails?.episodeRunTime;
-    // final duration = Duration(minutes: episodeRunTime);
-    // final hours = duration.inHours;
-    // final minutes = duration.inMinutes.remainder(60);
-    // texts.add('${hours}h ${minutes}m');
     if (episodeRunTime != null && episodeRunTime.isNotEmpty){
     texts.add('${episodeRunTime.first} m');
     }

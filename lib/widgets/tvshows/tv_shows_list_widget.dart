@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/Library/Widgets/inherited/provider.dart';
-import 'package:moviedb/domain/api_client/api_client.dart';
-import 'package:moviedb/navigation/main_navigation.dart';
-import 'package:moviedb/resources/resources.dart';
-import 'package:moviedb/widgets/movie_list/movie_list_model.dart';
+import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_model.dart';
 
 
@@ -47,7 +44,7 @@ class ShowListWidget extends StatelessWidget {
                       children: [
                         posterPath != null
                             ? Image.network(
-                                ApiClient.imageUrl(posterPath),
+                                ImageDownloader.imageUrl(posterPath),
                                 width: 95,
                               )
                             : const SizedBox.shrink(),

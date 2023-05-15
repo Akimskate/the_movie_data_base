@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:moviedb/domain/api_client/api_client.dart';
+import 'package:moviedb/domain/api_client/api_client_movie_and_show.dart';
 import 'package:moviedb/domain/entity/tv_show.dart';
 import 'package:moviedb/domain/entity/popular_tv_show_response.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
