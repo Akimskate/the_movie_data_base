@@ -2,14 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:moviedb/domain/api_client/api_client_account.dart';
-import 'package:moviedb/domain/api_client/api_client_movie_and_show.dart';
-import 'package:moviedb/domain/api_client/api_client_extension.dart';
+import 'package:moviedb/domain/api_client/account_api_client.dart';
+import 'package:moviedb/domain/api_client/movie_api_client.dart';
+import 'package:moviedb/domain/api_client/extension_api_client.dart';
+import 'package:moviedb/domain/api_client/show_api_client.dart';
 import 'package:moviedb/domain/data_providers/session_data_provider.dart';
 import 'package:moviedb/domain/entity/tv_show_details.dart';
 
 class TvShowDetailsModel extends ChangeNotifier {
-  final _apiClient = ApiClient();
+  final _showApiClient = ShowApiClient();
   final _apiClientAccount = AccountApiClient();
   final _sessionDataProvider = SessionDataProvider();
 
@@ -38,10 +39,10 @@ class TvShowDetailsModel extends ChangeNotifier {
 
   Future<void> loadDetails() async {
     try {
-      _showDetails = await _apiClient.showDetails(showId, _locale);
+      _showDetails = await _showApiClient.showDetails(showId, _locale, );
     final sessionId = await _sessionDataProvider.getSessionId();
     if (sessionId != null) {
-      _isFavoriteShow = await _apiClient.isFavoriteShow(showId, sessionId);
+      _isFavoriteShow = await _showApiClient.isFavoriteShow(showId, sessionId);
     }
     notifyListeners();
     } on ApiClientException catch (e) {

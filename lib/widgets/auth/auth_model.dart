@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/domain/api_client/api_client_extension.dart';
+import 'package:moviedb/domain/api_client/extension_api_client.dart';
 
 
 import '../../domain/services/auth_service.dart';

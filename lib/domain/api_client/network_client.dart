@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:moviedb/configuration/configuratioin.dart';
-import 'package:moviedb/domain/api_client/api_client_extension.dart';
+import 'package:moviedb/domain/api_client/extension_api_client.dart';
 
 class NetworkClient {
   final _client = HttpClient();

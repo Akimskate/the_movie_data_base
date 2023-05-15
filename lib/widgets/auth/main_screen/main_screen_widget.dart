@@ -1,13 +1,6 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'package:moviedb/Library/Widgets/inherited/provider.dart';
 import 'package:moviedb/domain/data_providers/session_data_provider.dart';
-import 'package:moviedb/widgets/movie_list/movie_list_model.dart';
-import 'package:moviedb/widgets/movie_list/movie_list_widget.dart';
-import 'package:moviedb/widgets/news/news_widget.dart';
-import 'package:moviedb/widgets/tvshows/tv_shows_list_model.dart';
-import 'package:moviedb/widgets/tvshows/tv_shows_list_widget.dart';
+import 'package:moviedb/domain/factoryes/screen_factory.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
@@ -18,8 +11,8 @@ class MainScreenWidget extends StatefulWidget {
 
 class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
-  final movieListModel = MovieListModel();
-  final showListModel = TvShowListModel();
+
+  final _screenFactory = ScreenFactory();
 
   void onSelectTab(int index) {
     if (_selectedTab == index) return;
@@ -28,12 +21,6 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    movieListModel.setupLocal(context);
-    showListModel.setupLocal(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,31 +37,23 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
       body: IndexedStack(
         index: _selectedTab,
         children: [
-          const NewsWidget(),
-          NotifierProvider(
-            create: () => movieListModel,
-            isManagingModel: false,
-            child: MovieListWidget(),
-          ),
-          NotifierProvider(
-            create: () => showListModel,
-            isManagingModel: false,
-            child: ShowListWidget(),
-          ),
+          _screenFactory.makeNewsList(),
+          _screenFactory.makeMovieList(),
+          _screenFactory.makeTVShowList(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,
-        items: [
-          const BottomNavigationBarItem(
+        items: const [
+          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Новости',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.movie_filter),
             label: 'Фильмы',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.tv),
             label: 'Сериалы',
           ),

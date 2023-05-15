@@ -2,15 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:moviedb/domain/api_client/api_client_account.dart';
-import 'package:moviedb/domain/api_client/api_client_movie_and_show.dart';
-import 'package:moviedb/domain/api_client/api_client_extension.dart';
+import 'package:moviedb/domain/api_client/account_api_client.dart';
+import 'package:moviedb/domain/api_client/movie_api_client.dart';
+import 'package:moviedb/domain/api_client/extension_api_client.dart';
 import 'package:moviedb/domain/data_providers/session_data_provider.dart';
 import 'package:moviedb/domain/entity/movie_details.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
   final _apiClientAccount = AccountApiClient();
-  final _apiClient = ApiClient();
+  final _apiClient = MovieApiClient();
   final _sessionDataProvider = SessionDataProvider();
 
   final int movieId;

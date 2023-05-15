@@ -1,5 +1,5 @@
-import 'package:moviedb/domain/api_client/api_client_account.dart';
-import 'package:moviedb/domain/api_client/api_client_auth.dart';
+import 'package:moviedb/domain/api_client/account_api_client.dart';
+import 'package:moviedb/domain/api_client/auth_api_client.dart';
 import 'package:moviedb/domain/data_providers/session_data_provider.dart';
 
 class AuthService {

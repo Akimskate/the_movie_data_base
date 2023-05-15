@@ -2,26 +2,79 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:moviedb/domain/api_client/api_client_movie_and_show.dart';
+import 'package:moviedb/Library/paginator.dart';
+import 'package:moviedb/configuration/configuratioin.dart';
+import 'package:moviedb/domain/api_client/show_api_client.dart';
 import 'package:moviedb/domain/entity/tv_show.dart';
 import 'package:moviedb/domain/entity/popular_tv_show_response.dart';
+import 'package:moviedb/domain/services/show_service.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
 
-class TvShowListModel extends ChangeNotifier {
-  final _apiClient = ApiClient();
-  final _shows = <TvShow>[];
-  late int _currentPage;
-  late int _totalPage;
-  var _isLoadingInProgress = false;
+class ShowListRowData {
+  final String name;
+  final int id;
+  final String? posterPath;
+  final String title;
+  final String firstairDate;
+  final String overview;
+
+  ShowListRowData(
+      {required this.name,
+        required this.id,
+      required this.posterPath,
+      required this.title,
+      required this.firstairDate,
+      required this.overview});
+}
+
+class ShowListViewModel extends ChangeNotifier {
+  final _showService = ShowService();
+
+  late final Paginator<TvShow> _popularShowPaginator;
+  late final Paginator<TvShow> _searchShowPaginator;
+
   String? _searchQuery;
   Timer? searchDebounce;
-
-  List<TvShow> get shows => List.unmodifiable(_shows);
-  late DateFormat _dateFormat;
   late String _locale = '';
+
+  bool get isSearchMode {
+    final searchQuery = _searchQuery;
+    return searchQuery != null && searchQuery.isNotEmpty;
+  }
+  
+  var _shows = <ShowListRowData>[];
 
   String stringFromDate(DateTime? date) =>
       date != null ? _dateFormat.format(date) : '';
+  
+  
+
+  List<ShowListRowData> get shows => List.unmodifiable(_shows);
+  late DateFormat _dateFormat;
+
+
+  ShowListViewModel() {
+    _popularShowPaginator = Paginator<TvShow>((page) async {
+      final result = await _showService.popularTvShow(page, _locale);
+      return PaginatorLoadResult(
+          data: result.tvShows,
+          currentPage: result.page,
+          totalPage: result.totalPages);
+    });
+    _searchShowPaginator = Paginator<TvShow>((page) async {
+      final result = await _showService.searchMovie(
+        page,
+        _locale,
+        _searchQuery ?? '',
+      );
+      return PaginatorLoadResult(
+          data: result.tvShows,
+          currentPage: result.page,
+          totalPage: result.totalPages);
+    });
+  }
+  
+
 
   Future<void> setupLocal(BuildContext context) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
@@ -32,37 +85,38 @@ class TvShowListModel extends ChangeNotifier {
   }
 
   Future<void> _resetList() async {
-    _currentPage = 0;
-    _totalPage = 1;
+    await _searchShowPaginator.reset();
+    await _popularShowPaginator.reset();
     _shows.clear();
     await _loadNextPage();
   }
 
-  Future<PopularTvShowResponse> _loadShows(int nextPage, String locale) async {
-    final query = _searchQuery;
-    if (query == null) {
-      return await _apiClient.popularTvShow(nextPage, _locale);
-    } else {
-      return await _apiClient.searchShow(nextPage, locale, query);
-    }
-  }
-
   Future<void> _loadNextPage() async {
-    if (_isLoadingInProgress || _currentPage >= _totalPage) return;
-    _isLoadingInProgress = true;
-    final nextPage = _currentPage + 1;
-
-    try {
-      final showResponse = await _loadShows(nextPage, _locale);
-      _shows.addAll(showResponse.tvShows);
-      _currentPage = showResponse.page;
-      _totalPage = showResponse.totalPages;
-      _isLoadingInProgress = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoadingInProgress = false;
+    if (isSearchMode) {
+      await _searchShowPaginator.loadNextPage();
+      _shows = _searchShowPaginator.data.map(_makeRowData).toList();
+    } else {
+      await _popularShowPaginator.loadNextPage();
+      _shows = _popularShowPaginator.data.map(_makeRowData).toList();
     }
+    notifyListeners();
   }
+
+  ShowListRowData _makeRowData(TvShow shows) {
+    final firstairDate = shows.firstairDate;
+    final firstairDateTitle =
+        firstairDate != null ? _dateFormat.format(firstairDate) : '';
+
+    return ShowListRowData(
+      name: shows.name,
+      id: shows.id,
+      overview: shows.overview,
+      posterPath: shows.posterPath,
+      firstairDate: firstairDateTitle,
+      title: shows.name,
+    );
+  }
+
 
   void onShowTap(BuildContext context, int index) {
     final id = _shows[index].id;
@@ -73,11 +127,16 @@ class TvShowListModel extends ChangeNotifier {
   }
 
   Future<void> searchShow(String text) async {
-    searchDebounce = Timer(const Duration(milliseconds: 400), () async {
+    searchDebounce?.cancel();
+    searchDebounce = Timer(const Duration(milliseconds: 300), () async {
       final searchQuery = text.isNotEmpty ? text : null;
       if (_searchQuery == searchQuery) return;
       _searchQuery = searchQuery;
-      await _resetList();
+      _shows.clear();
+      if (isSearchMode){
+        await _searchShowPaginator.reset();
+      }
+      _loadNextPage();
     });
   }
 
