@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/Library/Widgets/inherited/provider.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
+import 'package:provider/provider.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
   const MovieDetailsMainScreenCastWidget({Key? key}) : super(key: key);
@@ -46,11 +46,12 @@ class _ActorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
-    var cast = model?.movieDetails?.credits.cast;
-    if (cast == null || cast.isEmpty) return const SizedBox.shrink();
+    final data = context
+        .select((MovieDetailsModel model) => model.data.actorData);
+
+    if (data.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
-      itemCount: cast.length,
+      itemCount: data.length,
       itemExtent: 120,
       scrollDirection: Axis.horizontal,
       itemBuilder: (BuildContext context, int index) {
@@ -69,8 +70,8 @@ class _ActorItemListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<MovieDetailsModel>(context);
-    final actor = model!.movieDetails!.credits.cast[actorIndex];
+    final model = context.read<MovieDetailsModel>();
+    final actor = model.data.actorData[actorIndex];
     final profilePath = actor.profilePath;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -101,7 +102,7 @@ class _ActorItemListWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      actor.name,
+                      actor.actor,
                       maxLines: 2,
                     ),
                     const SizedBox(height: 10),

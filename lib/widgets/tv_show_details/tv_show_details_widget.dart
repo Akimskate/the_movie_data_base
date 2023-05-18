@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/Library/Widgets/inherited/provider.dart';
-import 'package:moviedb/widgets/app/my_app_model.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_info_widget.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_screen_cast_widget.dart';
+import 'package:provider/provider.dart';
 
 class TvShowDetailsWidget extends StatefulWidget {
   const TvShowDetailsWidget({
@@ -16,19 +15,12 @@ class TvShowDetailsWidget extends StatefulWidget {
 
 class _TvShowDetailsWidgetState extends State<TvShowDetailsWidget> {
 
-  @override
-  void initState() {
-    super.initState();
-    final model = NotifierProvider.read<TvShowDetailsModel>(context);
-    final appModel = Provider.read<MyAppModel>(context);
-    model?.onSessionExpired = () => appModel?.resetSession(context);
-  }
+
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    NotifierProvider.read<TvShowDetailsModel>(context)?.setupLocale(context);
+    context.read<TvShowDetailsModel>().setupLocale(context);
   }
 
   @override
@@ -51,8 +43,8 @@ class _TitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
-    return Text(model?.showDetails?.name ?? 'Loading . . . ');
+    final model = context.watch<TvShowDetailsModel>();
+    return Text(model.showDetails?.name ?? 'Loading . . . ');
   }
 }
 
@@ -61,8 +53,8 @@ class _BodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
-    final showDetails = model?.showDetails;
+    final model = context.watch<TvShowDetailsModel>();
+    final showDetails = model.showDetails;
     if (showDetails == null) {
       return const Center(
         child: CircularProgressIndicator(),

@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moviedb/Library/paginator.dart';
-import 'package:moviedb/configuration/configuratioin.dart';
-import 'package:moviedb/domain/api_client/show_api_client.dart';
 import 'package:moviedb/domain/entity/tv_show.dart';
-import 'package:moviedb/domain/entity/popular_tv_show_response.dart';
 import 'package:moviedb/domain/services/show_service.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
 

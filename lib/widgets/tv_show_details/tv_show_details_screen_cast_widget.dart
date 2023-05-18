@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/Library/Widgets/inherited/provider.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
+import 'package:provider/provider.dart';
 
 class TvShowDetailsMainScreenCastWidget extends StatelessWidget {
   const TvShowDetailsMainScreenCastWidget({Key? key}) : super(key: key);
@@ -46,8 +46,8 @@ class _ActorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
-    var cast = model?.showDetails?.credits.cast;
+    final model = context.watch<TvShowDetailsModel>();
+    var cast = model.showDetails?.credits.cast;
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
       itemCount: cast.length,
@@ -69,8 +69,8 @@ class _ActorItemListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<TvShowDetailsModel>(context);
-    final actor = model!.showDetails!.credits.cast[actorIndex];
+    final model = context.read<TvShowDetailsModel>();
+    final actor = model.showDetails!.credits.cast[actorIndex];
     final profilePath = actor.profilePath;
     return Padding(
       padding: const EdgeInsets.all(8.0),

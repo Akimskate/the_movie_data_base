@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/Library/Widgets/inherited/provider.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/domain/entity/tv_show_details_credits.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
+import 'package:provider/provider.dart';
 
 class TvShowDetailsMainInfoWidget extends StatelessWidget {
   const TvShowDetailsMainInfoWidget({Key? key}) : super(key: key);
@@ -57,9 +58,10 @@ class _DescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
+    final overview = context
+        .select((TvShowDetailsModel model) => model.showDetails?.overview);
     return Text(
-      model?.showDetails?.overview ?? '',
+      overview ?? '',
       style: const TextStyle(
         color: Colors.white,
         fontSize: 16,
@@ -74,9 +76,11 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
-    final backdropPath = model?.showDetails?.backdropPath;
-    final posterPath = model?.showDetails?.posterPath;
+    final model = context.read<TvShowDetailsModel>();
+    final showDetails =
+        context.select((TvShowDetailsModel model) => model.showDetails);
+    final backdropPath = showDetails?.backdropPath;
+    final posterPath = showDetails?.posterPath;
     return AspectRatio(
       aspectRatio: 390 / 219,
       child: Stack(
@@ -96,8 +100,8 @@ class _TopPosterWidget extends StatelessWidget {
             top: 5,
             right: 5,
             child: IconButton(
-              onPressed: () => model?.toggleFavorite(),
-              icon: Icon(model?.isFavoriteShow == true
+              onPressed: () => model.toggleFavorite(context),
+              icon: Icon(model.isFavoriteShow == true
                   ? Icons.favorite
                   : Icons.favorite_outline),
             ),
@@ -113,8 +117,9 @@ class _TvShowNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
-    var year = model?.showDetails?.firstAirDate?.year.toString();
+    final model = context.read<TvShowDetailsModel>();
+    var year = context.select((TvShowDetailsModel model) =>
+        model.showDetails?.firstAirDate?.year.toString());
     year = year != null ? ' ($year)' : '';
     return Center(
       child: RichText(
@@ -123,7 +128,7 @@ class _TvShowNameWidget extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-              text: model?.showDetails?.name ?? '',
+              text: model.showDetails?.name ?? '',
               style: const TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
@@ -149,7 +154,8 @@ class _ScoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showDetails =
-        NotifierProvider.watch<TvShowDetailsModel>(context)?.showDetails;
+        context.select((TvShowDetailsModel model) => model.showDetails);
+    
     var voteAverage = showDetails?.voteAverage ?? 0;
     final videos = showDetails?.videos?.results
         .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
@@ -204,10 +210,11 @@ class _SummeryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
-    if (model == null) return const SizedBox.shrink();
+    final model = context.watch<TvShowDetailsModel>();
+    final showDetails =
+        context.select((TvShowDetailsModel model) => model.showDetails);
     var texts = <String>[];
-    final firstAirDate = model.showDetails?.firstAirDate;
+    final firstAirDate = showDetails?.firstAirDate;
     if (firstAirDate != null) {
       texts.add(model.stringFromDate(firstAirDate));
     }
@@ -256,8 +263,8 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<TvShowDetailsModel>(context);
-    var crew = model?.showDetails?.credits.crew;
+    final model = context.read<TvShowDetailsModel>();
+    var crew = model.showDetails?.credits.crew;
     if (crew == null || crew.isEmpty) return const SizedBox.shrink();
     crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
     var crewChunks = <List<Crew>>[];
