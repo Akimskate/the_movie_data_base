@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
-import 'package:moviedb/domain/entity/movie_details_credits.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
@@ -185,8 +184,8 @@ class _ScoreWidget extends StatelessWidget {
               MainNavigationRouteNames.movieTrailerWidget,
               arguments: trailerKey,
             ),
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Icon(Icons.play_arrow),
                 Text('Play Trailer'),
               ],
@@ -229,8 +228,8 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var crew = context
-        .select((MovieDetailsModel model) => model.data.peopleData);
+    var crew =
+        context.select((MovieDetailsModel model) => model.data.peopleData);
     if (crew.isEmpty) return const SizedBox.shrink();
     return Column(
       children: crew

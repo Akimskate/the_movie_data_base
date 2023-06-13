@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/domain/data_providers/session_data_provider.dart';
 import 'package:moviedb/domain/factoryes/screen_factory.dart';
 
 class MainScreenWidget extends StatefulWidget {

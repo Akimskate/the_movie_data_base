@@ -4,7 +4,6 @@ import 'package:moviedb/domain/entity/tv_show_details_credits.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
 import 'package:provider/provider.dart';
 
 class TvShowDetailsMainInfoWidget extends StatelessWidget {
@@ -155,7 +154,7 @@ class _ScoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final showDetails =
         context.select((TvShowDetailsModel model) => model.showDetails);
-    
+
     var voteAverage = showDetails?.voteAverage ?? 0;
     final videos = showDetails?.videos?.results
         .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
@@ -194,8 +193,8 @@ class _ScoreWidget extends StatelessWidget {
                 ),
                 child: Row(
                   children: const [
-                     Icon(Icons.play_arrow),
-                     Text('Play Trailer'),
+                    Icon(Icons.play_arrow),
+                    Text('Play Trailer'),
                   ],
                 ),
               )
@@ -223,12 +222,10 @@ class _SummeryWidget extends StatelessWidget {
       texts.add('(${productionCountries.first.iso31661})');
     }
 
-
     final episodeRunTime = model.showDetails?.episodeRunTime;
-    if (episodeRunTime != null && episodeRunTime.isNotEmpty){
-    texts.add('${episodeRunTime.first} m');
+    if (episodeRunTime != null && episodeRunTime.isNotEmpty) {
+      texts.add('${episodeRunTime.first} m');
     }
-
 
     final genres = model.showDetails?.genres;
     if (genres != null && genres.isNotEmpty) {

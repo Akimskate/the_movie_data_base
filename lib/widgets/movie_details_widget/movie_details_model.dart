@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moviedb/Library/localized_model.dart';
 
-import 'package:moviedb/domain/api_client/account_api_client.dart';
 import 'package:moviedb/domain/api_client/extension_api_client.dart';
 import 'package:moviedb/domain/entity/movie_details.dart';
 import 'package:moviedb/domain/services/auth_service.dart';
