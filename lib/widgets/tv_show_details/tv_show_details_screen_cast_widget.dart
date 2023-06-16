@@ -46,11 +46,12 @@ class _ActorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<TvShowDetailsModel>();
-    var cast = model.showDetails?.credits.cast;
-    if (cast == null || cast.isEmpty) return const SizedBox.shrink();
+    final data =
+        context.select((TvShowDetailsModel model) => model.data.actorData);
+
+    if (data.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
-      itemCount: cast.length,
+      itemCount: data.length,
       itemExtent: 120,
       scrollDirection: Axis.horizontal,
       itemBuilder: (BuildContext context, int index) {
@@ -70,7 +71,7 @@ class _ActorItemListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.read<TvShowDetailsModel>();
-    final actor = model.showDetails!.credits.cast[actorIndex];
+    final actor = model.data.actorData[actorIndex];
     final profilePath = actor.profilePath;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -101,7 +102,7 @@ class _ActorItemListWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      actor.name,
+                      actor.actor,
                       maxLines: 2,
                     ),
                     const SizedBox(height: 10),

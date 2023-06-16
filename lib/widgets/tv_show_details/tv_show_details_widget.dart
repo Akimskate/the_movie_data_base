@@ -14,13 +14,12 @@ class TvShowDetailsWidget extends StatefulWidget {
 }
 
 class _TvShowDetailsWidgetState extends State<TvShowDetailsWidget> {
-
-
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<TvShowDetailsModel>().setupLocale(context);
+    final locale = Localizations.localeOf(context);
+    Future.microtask(
+        () => context.read<TvShowDetailsModel>().setupLocale(context, locale));
   }
 
   @override
@@ -43,8 +42,9 @@ class _TitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<TvShowDetailsModel>();
-    return Text(model.showDetails?.name ?? 'Loading . . . ');
+    final title =
+        context.select((TvShowDetailsModel model) => model.data.title);
+    return Text(title);
   }
 }
 
@@ -53,9 +53,9 @@ class _BodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<TvShowDetailsModel>();
-    final showDetails = model.showDetails;
-    if (showDetails == null) {
+    final isLoading =
+        context.select((TvShowDetailsModel model) => model.data.isLoading);
+    if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );

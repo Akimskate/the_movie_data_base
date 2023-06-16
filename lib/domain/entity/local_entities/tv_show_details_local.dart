@@ -2,10 +2,10 @@ import 'package:moviedb/domain/entity/tv_show_details.dart';
 
 class TvShowDetailsLocal {
   final TvShowDetails details;
-  final bool isFavorite;
+  final bool isFavoriteShow;
 
   TvShowDetailsLocal({
     required this.details,
-    required this.isFavorite,
+    required this.isFavoriteShow,
   });
 }

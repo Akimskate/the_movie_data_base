@@ -17,7 +17,7 @@ class ShowListRowData {
 
   ShowListRowData(
       {required this.name,
-        required this.id,
+      required this.id,
       required this.posterPath,
       required this.title,
       required this.firstairDate,
@@ -38,17 +38,14 @@ class ShowListViewModel extends ChangeNotifier {
     final searchQuery = _searchQuery;
     return searchQuery != null && searchQuery.isNotEmpty;
   }
-  
+
   var _shows = <ShowListRowData>[];
 
   String stringFromDate(DateTime? date) =>
       date != null ? _dateFormat.format(date) : '';
-  
-  
 
   List<ShowListRowData> get shows => List.unmodifiable(_shows);
   late DateFormat _dateFormat;
-
 
   ShowListViewModel() {
     _popularShowPaginator = Paginator<TvShow>((page) async {
@@ -59,7 +56,7 @@ class ShowListViewModel extends ChangeNotifier {
           totalPage: result.totalPages);
     });
     _searchShowPaginator = Paginator<TvShow>((page) async {
-      final result = await _showService.searchMovie(
+      final result = await _showService.searchTvShow(
         page,
         _locale,
         _searchQuery ?? '',
@@ -70,8 +67,6 @@ class ShowListViewModel extends ChangeNotifier {
           totalPage: result.totalPages);
     });
   }
-  
-
 
   Future<void> setupLocal(BuildContext context) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
@@ -114,7 +109,6 @@ class ShowListViewModel extends ChangeNotifier {
     );
   }
 
-
   void onShowTap(BuildContext context, int index) {
     final id = _shows[index].id;
     Navigator.of(context).pushNamed(
@@ -130,7 +124,7 @@ class ShowListViewModel extends ChangeNotifier {
       if (_searchQuery == searchQuery) return;
       _searchQuery = searchQuery;
       _shows.clear();
-      if (isSearchMode){
+      if (isSearchMode) {
         await _searchShowPaginator.reset();
       }
       _loadNextPage();

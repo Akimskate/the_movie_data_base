@@ -44,11 +44,6 @@ class ScreenFactory {
       ),
       child: const AuthWidget(),
     );
-
-    // return ChangeNotifierProvider(
-    //   create: (_) => AuthViewModel(),
-    //   child: const AuthWidget(),
-    // );
   }
 
   Widget makeMainScreen() {
