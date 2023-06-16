@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/domain/factoryes/screen_factory.dart';
+import 'package:moviedb/domain/services/auth_service.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class MainScreenWidget extends StatefulWidget {
 class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
 
+  final _authService = AuthService();
   final _screenFactory = ScreenFactory();
 
   void onSelectTab(int index) {
@@ -20,7 +22,6 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +29,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
         title: const Text('TMDB'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: _authService.logout,
             icon: const Icon(Icons.logout),
           )
         ],

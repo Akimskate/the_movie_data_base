@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+
 import 'package:moviedb/domain/blocs/auth_bloc.dart';
 import 'package:moviedb/domain/blocs/auth_state.dart';
-import 'package:moviedb/widgets/auth/auth_model.dart';
+import 'package:moviedb/widgets/auth/auth_view_cubit.dart';
 import 'package:moviedb/widgets/auth/auth_widget.dart';
 import 'package:moviedb/widgets/auth/main_screen/main_screen_widget.dart';
-import 'package:moviedb/widgets/loader_widget/loader_view_model.dart';
+import 'package:moviedb/widgets/loader_widget/loader_view_cubit.dart';
 import 'package:moviedb/widgets/loader_widget/loader_widget.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_widget.dart';
@@ -17,7 +19,6 @@ import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_model.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_widget.dart';
-import 'package:provider/provider.dart';
 
 class ScreenFactory {
   AuthBloc? _authBloc;
@@ -25,18 +26,29 @@ class ScreenFactory {
   Widget makeLoader() {
     final authBloc = _authBloc ?? AuthBloc(AuthCheckStatusInProgressState());
     return BlocProvider<LoaderViewCubit>(
-      create: (context) =>
-          LoaderViewCubit(LoaderViewCubitState.unknown, authBloc),
+      create: (context) => LoaderViewCubit(
+        LoaderViewCubitState.unknown,
+        authBloc,
+      ),
       child: const LoaderWidget(),
-      lazy: false,
+      // lazy: false,
     );
   }
 
   Widget makeAuth() {
-    return ChangeNotifierProvider(
-      create: (_) => AuthViewModel(),
+    final authBloc = _authBloc ?? AuthBloc(AuthCheckStatusInProgressState());
+    return BlocProvider<AuthViewCubit>(
+      create: (_) => AuthViewCubit(
+        AuthViewCubitFormFillInProgressState(),
+        authBloc,
+      ),
       child: const AuthWidget(),
     );
+
+    // return ChangeNotifierProvider(
+    //   create: (_) => AuthViewModel(),
+    //   child: const AuthWidget(),
+    // );
   }
 
   Widget makeMainScreen() {
