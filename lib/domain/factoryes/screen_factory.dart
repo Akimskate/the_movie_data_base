@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import 'package:moviedb/domain/blocs/auth_bloc.dart';
-import 'package:moviedb/domain/blocs/auth_state.dart';
+import 'package:moviedb/domain/blocs/auth_bloc/auth_bloc.dart';
+import 'package:moviedb/domain/blocs/auth_bloc/auth_state.dart';
 import 'package:moviedb/widgets/auth/auth_view_cubit.dart';
 import 'package:moviedb/widgets/auth/auth_widget.dart';
 import 'package:moviedb/widgets/auth/main_screen/main_screen_widget.dart';

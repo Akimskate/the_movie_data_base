@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:moviedb/domain/blocs/auth_bloc.dart';
-import 'package:moviedb/domain/blocs/auth_event.dart';
-import 'package:moviedb/domain/blocs/auth_state.dart';
+import 'package:moviedb/domain/blocs/auth_bloc/auth_bloc.dart';
+import 'package:moviedb/domain/blocs/auth_bloc/auth_event.dart';
+import 'package:moviedb/domain/blocs/auth_bloc/auth_state.dart';
 
 enum LoaderViewCubitState { unknown, authorized, notAuthorized }
 
