@@ -83,6 +83,8 @@ class TVShowListState {
   final String searchQuerry;
 
   bool get isSearchMode => searchQuerry.isNotEmpty;
+  List<TvShow> get movies =>
+      isSearchMode ? searchTVShowContainer.shows : popularTVShowContainer.shows;
 
   const TVShowListState.initial()
       : popularTVShowContainer = const TVShowListContainer.initial(),

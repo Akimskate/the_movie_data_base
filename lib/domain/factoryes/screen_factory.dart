@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
+import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_state.dart';
+import 'package:moviedb/widgets/movie_list/movie_list_cubit.dart';
 import 'package:provider/provider.dart';
 
 import 'package:moviedb/domain/blocs/auth_bloc/auth_bloc.dart';
@@ -11,7 +14,6 @@ import 'package:moviedb/widgets/loader_widget/loader_view_cubit.dart';
 import 'package:moviedb/widgets/loader_widget/loader_widget.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_widget.dart';
-import 'package:moviedb/widgets/movie_list/movie_list_model.dart';
 import 'package:moviedb/widgets/movie_list/movie_list_widget.dart';
 import 'package:moviedb/widgets/movie_trailers/movie_trailer_widget.dart';
 import 'package:moviedb/widgets/news/news_widget.dart';
@@ -31,7 +33,7 @@ class ScreenFactory {
         authBloc,
       ),
       child: const LoaderWidget(),
-      // lazy: false,
+      lazy: false,
     );
   }
 
@@ -73,8 +75,12 @@ class ScreenFactory {
   }
 
   Widget makeMovieList() {
-    return ChangeNotifierProvider(
-      create: (_) => MovieListViewModel(),
+    return BlocProvider<MovieListCubit>(
+      create: (_) => MovieListCubit(
+        movieListBloc: MovieListBloc(
+          const MovieListState.initial(),
+        ),
+      ),
       child: const MovieListWidget(),
     );
   }
