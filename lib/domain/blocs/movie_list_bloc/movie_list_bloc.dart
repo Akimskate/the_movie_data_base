@@ -18,12 +18,22 @@ class MovieListEventLoadNextPageEvent extends MovieListEvent {
   });
 }
 
-class MovieListEventLoadResetEvent extends MovieListEvent {}
+class MovieListEventLoadResetEvent extends MovieListEvent {
+  final String locale;
+
+  MovieListEventLoadResetEvent({
+    required this.locale,
+  });
+}
 
 class MovieListEventLoadSearchMovieEvent extends MovieListEvent {
   final String querry;
+  final String locale;
 
-  MovieListEventLoadSearchMovieEvent(this.querry);
+  MovieListEventLoadSearchMovieEvent(
+    this.querry,
+    this.locale,
+  );
 }
 
 class MovieListContainer {
@@ -122,17 +132,19 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState> {
   MovieListBloc(MovieListState initialState) : super(initialState) {
     on<MovieListEvent>((event, emit) async {
       if (event is MovieListEventLoadNextPageEvent) {
-        //await onMovieListEventLoadNextPageEvent(event, emit);
+        await onMovieListEventLoadNextPageEvent(event, emit);
       } else if (event is MovieListEventLoadResetEvent) {
-        //await onAuthLoginEvent(event, emit);
+        await onMovieListEventLoadResetEvent(event, emit);
       } else if (event is MovieListEventLoadSearchMovieEvent) {
-        //await onAuthLogoutEvent(event, emit);
+        await onListEventLoadSearchMovieEvent(event, emit);
       }
     }, transformer: sequential());
   }
 
   Future<MovieListContainer?> _loadNextPage(
-      MovieListContainer container, NextPageLoader loader) async {
+    MovieListContainer container,
+    Future<PopularMovieResponse> Function(int) loader,
+  ) async {
     if (container.isComplete) return null;
     final nextPage = container.currentPage + 1;
     final result = await loader(nextPage);
@@ -185,20 +197,25 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState> {
         emit(newState);
       }
     }
+  }
 
-    Future<void> onMovieListEventLoadResetEvent(
-      MovieListEventLoadResetEvent event,
-      Emitter<MovieListState> emit,
-    ) async {
-      emit(const MovieListState.initial());
-      //add(MovieListEventLoadNextPageEvent());
-    }
+  Future<void> onMovieListEventLoadResetEvent(
+    MovieListEventLoadResetEvent event,
+    Emitter<MovieListState> emit,
+  ) async {
+    emit(const MovieListState.initial());
+    add(MovieListEventLoadNextPageEvent(locale: event.locale));
+  }
 
-    Future<void> onListEventLoadSearchMovieEvent(
-      MovieListEventLoadSearchMovieEvent event,
-      Emitter<MovieListState> emit,
-    ) async {}
+  Future<void> onListEventLoadSearchMovieEvent(
+    MovieListEventLoadSearchMovieEvent event,
+    Emitter<MovieListState> emit,
+  ) async {
+    if (state.searchQuerry == event.querry) return;
+    final newState = state.copyWith(
+        searchQuerry: event.querry,
+        searchMovieContainer: const MovieListContainer.initial());
+    emit(newState);
+    add(MovieListEventLoadNextPageEvent(locale: event.locale));
   }
 }
-
-typedef NextPageLoader = Future<PopularMovieResponse> Function(int);
