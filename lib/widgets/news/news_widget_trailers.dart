@@ -72,9 +72,9 @@ class _NewsWidgetTrailersState extends State<NewsWidgetTrailers> {
                                 padding: const EdgeInsets.only(bottom: 20),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Stack(
+                                  child: const Stack(
                                     alignment: Alignment.center,
-                                    children: const [
+                                    children: [
                                       Image(
                                         image: AssetImage(AppImages.img),
                                       ),

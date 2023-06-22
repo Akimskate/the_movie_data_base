@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
 import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_state.dart';
 import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_bloc.dart';
+import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_state.dart';
 import 'package:moviedb/widgets/movie_list/movie_list_cubit.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_cubit.dart';
 import 'package:provider/provider.dart';

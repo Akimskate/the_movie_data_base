@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_bloc.dart';
+import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_event.dart';
+import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_state.dart';
 import 'package:moviedb/domain/entity/tv_show.dart';
 
 class TVShowListRowData {

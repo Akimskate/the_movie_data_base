@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moviedb/Library/localized_model.dart';
@@ -229,7 +229,6 @@ class MovieDetailsModel extends ChangeNotifier {
       case ApiClientExceptionType.sessionExpired:
         authService.logout();
         MainNavigation.resetNavigation(context);
-
         break;
       default:
         print(exception);
