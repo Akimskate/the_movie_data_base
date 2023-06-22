@@ -15,21 +15,13 @@ class TVShowListEventLoadNextPageEvent extends TvShowListEvent {
   });
 }
 
-class TVShowListEventLoadResetEvent extends TvShowListEvent {
-  final String locale;
+class TVShowListEventLoadResetEvent extends TvShowListEvent {}
 
-  TVShowListEventLoadResetEvent({
-    required this.locale,
-  });
-}
-
-class TVShowListEventLoadSearchMovieEvent extends TvShowListEvent {
+class TVShowListEventLoadSearchTVShowEvent extends TvShowListEvent {
   final String querry;
-  final String locale;
 
-  TVShowListEventLoadSearchMovieEvent(
+  TVShowListEventLoadSearchTVShowEvent(
     this.querry,
-    this.locale,
   );
 }
 
@@ -83,7 +75,7 @@ class TVShowListState {
   final String searchQuerry;
 
   bool get isSearchMode => searchQuerry.isNotEmpty;
-  List<TvShow> get movies =>
+  List<TvShow> get shows =>
       isSearchMode ? searchTVShowContainer.shows : popularTVShowContainer.shows;
 
   const TVShowListState.initial()
@@ -114,14 +106,14 @@ class TVShowListState {
 
   TVShowListState copyWith({
     TVShowListContainer? popularTVShowContainer,
-    TVShowListContainer? searchMovieContainer,
+    TVShowListContainer? searchTVShowContainer,
     String? searchQuerry,
   }) {
     return TVShowListState(
       popularTVShowContainer:
           popularTVShowContainer ?? this.popularTVShowContainer,
       searchTVShowContainer:
-          searchMovieContainer ?? this.popularTVShowContainer,
+          searchTVShowContainer ?? this.searchTVShowContainer,
       searchQuerry: searchQuerry ?? this.searchQuerry,
     );
   }
@@ -135,7 +127,7 @@ class TVShowListBloc extends Bloc<TvShowListEvent, TVShowListState> {
         await onTVShowListEventLoadNextPageEvent(event, emit);
       } else if (event is TVShowListEventLoadResetEvent) {
         await onTVShowListEventLoadResetEvent(event, emit);
-      } else if (event is TVShowListEventLoadSearchMovieEvent) {
+      } else if (event is TVShowListEventLoadSearchTVShowEvent) {
         await onListEventLoadSearchTVShowEvent(event, emit);
       }
     }, transformer: sequential());
@@ -148,8 +140,7 @@ class TVShowListBloc extends Bloc<TvShowListEvent, TVShowListState> {
     if (container.isComplete) return null;
     final nextPage = container.currentPage + 1;
     final result = await loader(nextPage);
-    final shows = container.shows;
-    shows.addAll(result.tvShows);
+    final shows = List<TvShow>.from(container.shows)..addAll(result.tvShows);
 
     final newContainer = container.copyWith(
       shows: shows,
@@ -177,7 +168,7 @@ class TVShowListBloc extends Bloc<TvShowListEvent, TVShowListState> {
         },
       );
       if (container != null) {
-        final newState = state.copyWith(popularTVShowContainer: container);
+        final newState = state.copyWith(searchTVShowContainer: container);
         emit(newState);
       }
     } else {
@@ -204,18 +195,16 @@ class TVShowListBloc extends Bloc<TvShowListEvent, TVShowListState> {
     Emitter<TVShowListState> emit,
   ) async {
     emit(const TVShowListState.initial());
-    add(TVShowListEventLoadNextPageEvent(locale: event.locale));
   }
 
   Future<void> onListEventLoadSearchTVShowEvent(
-    TVShowListEventLoadSearchMovieEvent event,
+    TVShowListEventLoadSearchTVShowEvent event,
     Emitter<TVShowListState> emit,
   ) async {
     if (state.searchQuerry == event.querry) return;
     final newState = state.copyWith(
         searchQuerry: event.querry,
-        searchMovieContainer: const TVShowListContainer.initial());
+        searchTVShowContainer: const TVShowListContainer.initial());
     emit(newState);
-    add(TVShowListEventLoadNextPageEvent(locale: event.locale));
   }
 }

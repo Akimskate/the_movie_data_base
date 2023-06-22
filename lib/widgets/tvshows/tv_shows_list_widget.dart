@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:moviedb/navigation/main_navigation.dart';
+import 'package:moviedb/widgets/tvshows/tv_shows_list_cubit.dart';
 import 'package:provider/provider.dart';
 
 import 'package:moviedb/domain/api_client/image_downloader.dart';
-import 'package:moviedb/widgets/tvshows/tv_shows_list_model.dart';
 
 class ShowListWidget extends StatefulWidget {
   const ShowListWidget({Key? key}) : super(key: key);
@@ -16,7 +17,8 @@ class _ShowListWidgetState extends State<ShowListWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<ShowListViewModel>().setupLocal(context);
+    final locale = Localizations.localeOf(context);
+    context.read<TVShowListCubit>().setupLocal(locale.languageCode);
   }
 
   @override
@@ -37,11 +39,11 @@ class _SearchWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<ShowListViewModel>();
+    final cubit = context.read<TVShowListCubit>();
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: TextField(
-        onChanged: model.searchShow,
+        onChanged: cubit.searchTVShow,
         decoration: InputDecoration(
           labelText: 'Search',
           filled: true,
@@ -60,14 +62,14 @@ class _ShowListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<ShowListViewModel>();
+    final cubit = context.watch<TVShowListCubit>();
     return ListView.builder(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       padding: const EdgeInsets.only(top: 70),
-      itemCount: model.shows.length,
+      itemCount: cubit.state.shows.length,
       itemExtent: 163,
       itemBuilder: (BuildContext context, int index) {
-        model.showedTvshowAtIndex(index);
+        cubit.showedTVShowAtIndex(index);
 
         return _MovieListRowWidget(index: index);
       },
@@ -84,8 +86,8 @@ class _MovieListRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<ShowListViewModel>();
-    final shows = model.shows[index];
+    final cubit = context.read<TVShowListCubit>();
+    final shows = cubit.state.shows[index];
     final posterPath = shows.posterPath;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -119,7 +121,7 @@ class _MovieListRowWidget extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
                       Text(
-                        shows.name,
+                        shows.title,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -147,11 +149,18 @@ class _MovieListRowWidget extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(10),
-              onTap: () => model.onShowTap(context, index),
+              onTap: () => _onShowTap(context, shows.id),
             ),
           )
         ],
       ),
+    );
+  }
+
+  void _onShowTap(BuildContext context, int showId) {
+    Navigator.of(context).pushNamed(
+      MainNavigationRouteNames.showDetails,
+      arguments: showId,
     );
   }
 }
