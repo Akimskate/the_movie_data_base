@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:moviedb/widgets/movie_details_widget/movie_details_cubit.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_main_screen_cast_widget.dart';
-import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
 import 'package:provider/provider.dart';
 
 import 'movie_details_main_info_widget.dart';
@@ -21,7 +21,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
 
     final locale = Localizations.localeOf(context);
     Future.microtask(
-        () => context.read<MovieDetailsModel>().setupLocale(context, locale));
+        () => context.read<MovieDetailsCubit>().setupLocale(context, locale));
   }
 
   @override
@@ -44,7 +44,7 @@ class _TitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.select((MovieDetailsModel model) => model.data.title);
+    final title = context.select((MovieDetailsCubit cubit) => cubit.data.title);
     return Text(title);
   }
 }
@@ -55,7 +55,7 @@ class _BodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLoading =
-        context.select((MovieDetailsModel model) => model.data.isLoading);
+        context.select((MovieDetailsCubit cubit) => cubit.data.isLoading);
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),

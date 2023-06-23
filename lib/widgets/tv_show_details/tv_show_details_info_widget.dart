@@ -116,12 +116,8 @@ class _TvShowNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final model = context.read<TvShowDetailsModel>();
-    // var year = context.select((TvShowDetailsModel model) =>
-    //     model.showDetails?.firstAirDate?.year.toString());
     var data =
         context.select((TvShowDetailsModel model) => model.data.nameData);
-    // year = year != null ? ' ($year)' : '';
     return Center(
       child: RichText(
         maxLines: 3,
@@ -156,12 +152,6 @@ class _ScoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final scoreData =
         context.select((TvShowDetailsModel model) => model.data.scoreData);
-
-    // var voteAverage = showDetails?.voteAverage ?? 0;
-    // final videos = showDetails?.videos?.results
-    //     .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
-    // final trailerKey = scoreData?.isNotEmpty == true ? videos?.first.key : null;
-    // voteAverage = voteAverage * 10;
     final trailerKey = scoreData.trailerKey;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -212,33 +202,6 @@ class _SummeryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final model = context.watch<TvShowDetailsModel>();
-    // final showDetails =
-    //     context.select((TvShowDetailsModel model) => model.showDetails);
-    // var texts = <String>[];
-    // final firstAirDate = showDetails?.firstAirDate;
-    // if (firstAirDate != null) {
-    //   texts.add(model.stringFromDate(firstAirDate));
-    // }
-    // final productionCountries = model.showDetails?.productionCountries;
-    // if (productionCountries != null && productionCountries.isNotEmpty) {
-    //   texts.add('(${productionCountries.first.iso31661})');
-    // }
-
-    // final episodeRunTime = model.showDetails?.episodeRunTime;
-    // if (episodeRunTime != null && episodeRunTime.isNotEmpty) {
-    //   texts.add('${episodeRunTime.first} m');
-    // }
-
-    // final genres = model.showDetails?.genres;
-    // if (genres != null && genres.isNotEmpty) {
-    //   var genresNames = <String>[];
-    //   for (var genr in genres) {
-    //     genresNames.add(genr.name);
-    //   }
-    //   texts.add(genresNames.join(', '));
-    // }
-
     final summary =
         context.select((TvShowDetailsModel model) => model.data.summary);
 
@@ -266,16 +229,6 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final model = context.read<TvShowDetailsModel>();
-    // var crew = model.showDetails?.credits.crew;
-    // if (crew == null || crew.isEmpty) return const SizedBox.shrink();
-    // crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
-    // var crewChunks = <List<Crew>>[];
-    // for (var i = 0; i < crew.length; i += 2) {
-    //   crewChunks.add(
-    //     crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
-    //   );
-    // }
     var crew =
         context.select((TvShowDetailsModel model) => model.data.peopleData);
     if (crew.isEmpty) return const SizedBox.shrink();

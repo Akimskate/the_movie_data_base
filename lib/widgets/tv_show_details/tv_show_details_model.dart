@@ -96,24 +96,10 @@ class TvShowDetailsData {
 class TvShowDetailsModel extends ChangeNotifier {
   final authService = AuthService();
   final showService = ShowService();
-
-  // final _showApiClient = ShowApiClient();
-  // final _apiClientAccount = AccountApiClient();
-  // final _sessionDataProvider = SessionDataProvider();
-
   final int showId;
   final data = TvShowDetailsData();
   final _localeStorage = LocalizedModelStorage();
   late DateFormat _dateFormat;
-
-  // TvShowDetails? _showDetails;
-  // bool _isFavoriteShow = false;
-  // String _locale = '';
-  // late DateFormat _dateFormat;
-
-  // TvShowDetails? get showDetails => _showDetails;
-  // bool get isFavoriteShow => _isFavoriteShow;
-
   TvShowDetailsModel(this.showId);
 
   String stringFromDate(DateTime? date) =>
@@ -125,23 +111,6 @@ class TvShowDetailsModel extends ChangeNotifier {
     updateData(null, false);
     await loadDetails(context);
   }
-
-  // Future<void> loadDetails(BuildContext context) async {
-  //   try {
-  //     _showDetails = await _showApiClient.showDetails(
-  //       showId,
-  //       _locale,
-  //     );
-  //     final sessionId = await _sessionDataProvider.getSessionId();
-  //     if (sessionId != null) {
-  //       _isFavoriteShow =
-  //           await _showApiClient.isFavoriteShow(showId, sessionId);
-  //     }
-  //     notifyListeners();
-  //   } on ApiClientException catch (e) {
-  //     _handleApiClienException(e, context);
-  //   }
-  // }
 
   Future<void> loadDetails(BuildContext context) async {
     try {
@@ -205,7 +174,11 @@ class TvShowDetailsModel extends ChangeNotifier {
     if (details.productionCountries.isNotEmpty) {
       texts.add('(${details.productionCountries.first.iso31661})');
     }
-    final runtime = details.episodeRunTime?.first ?? 0;
+    int runtime = 0;
+    if (details.episodeRunTime != null && details.episodeRunTime!.isNotEmpty) {
+      runtime = details.episodeRunTime![0];
+    }
+    // final runtime = details.episodeRunTime?[0] ?? 0;
     final duration = Duration(minutes: runtime);
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);

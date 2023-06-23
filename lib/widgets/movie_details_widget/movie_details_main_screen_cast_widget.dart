@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
-import 'package:moviedb/widgets/movie_details_widget/movie_details_model.dart';
+import 'package:moviedb/widgets/movie_details_widget/movie_details_cubit.dart';
 import 'package:provider/provider.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
@@ -46,8 +46,8 @@ class _ActorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = context
-        .select((MovieDetailsModel model) => model.data.actorData);
+    final data =
+        context.select((MovieDetailsCubit cubit) => cubit.data.actorData);
 
     if (data.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
@@ -70,8 +70,8 @@ class _ActorItemListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieDetailsModel>();
-    final actor = model.data.actorData[actorIndex];
+    final cubit = context.read<MovieDetailsCubit>();
+    final actor = cubit.data.actorData[actorIndex];
     final profilePath = actor.profilePath;
     return Padding(
       padding: const EdgeInsets.all(8.0),

@@ -6,7 +6,8 @@ import 'package:moviedb/domain/entity/tv_show_details.dart';
 class ShowApiClient {
   final _networkClient = NetworkClient();
 
-  Future<PopularTvShowResponse> popularTvShow(int page, String locale, String apiKey) async {
+  Future<PopularTvShowResponse> popularTvShow(
+      int page, String locale, String apiKey) async {
     PopularTvShowResponse parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularTvShowResponse.fromJson(jsonMap);
@@ -51,7 +52,7 @@ class ShowApiClient {
     return result;
   }
 
-   Future<TvShowDetails> showDetails(
+  Future<TvShowDetails> showDetails(
     int showId,
     String locale,
   ) async {
