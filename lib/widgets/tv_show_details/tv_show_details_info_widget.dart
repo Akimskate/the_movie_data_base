@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/domain/api_client/image_downloader.dart';
+import 'package:provider/provider.dart';
 
+import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
-import 'package:provider/provider.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_cubit.dart';
 
 class TvShowDetailsMainInfoWidget extends StatelessWidget {
   const TvShowDetailsMainInfoWidget({Key? key}) : super(key: key);
@@ -58,7 +58,7 @@ class _DescriptionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final overview =
-        context.select((TvShowDetailsModel model) => model.data.overview);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.overview);
     return Text(
       overview,
       style: const TextStyle(
@@ -75,9 +75,9 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<TvShowDetailsModel>();
+    final cubit = context.read<TVShowDetailsCubit>();
     final showDetails =
-        context.select((TvShowDetailsModel model) => model.data.posterShowData);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.posterShowData);
     final backdropPath = showDetails.backdropPath;
     final posterPath = showDetails.posterPath;
     return AspectRatio(
@@ -99,7 +99,7 @@ class _TopPosterWidget extends StatelessWidget {
             top: 5,
             right: 5,
             child: IconButton(
-              onPressed: () => model.toggleFavorite(context),
+              onPressed: () => cubit.toggleFavorite(context),
               icon: Icon(showDetails.isFavoriteShow == true
                   ? Icons.favorite
                   : Icons.favorite_outline),
@@ -117,7 +117,7 @@ class _TvShowNameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var data =
-        context.select((TvShowDetailsModel model) => model.data.nameData);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.nameData);
     return Center(
       child: RichText(
         maxLines: 3,
@@ -151,7 +151,7 @@ class _ScoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scoreData =
-        context.select((TvShowDetailsModel model) => model.data.scoreData);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.scoreData);
     final trailerKey = scoreData.trailerKey;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -203,7 +203,7 @@ class _SummeryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final summary =
-        context.select((TvShowDetailsModel model) => model.data.summary);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.summary);
 
     return ColoredBox(
       color: const Color.fromRGBO(22, 21, 25, 1.0),
@@ -230,7 +230,7 @@ class _PeopleWidgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var crew =
-        context.select((TvShowDetailsModel model) => model.data.peopleData);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.peopleData);
     if (crew.isEmpty) return const SizedBox.shrink();
     return Column(
       children: crew

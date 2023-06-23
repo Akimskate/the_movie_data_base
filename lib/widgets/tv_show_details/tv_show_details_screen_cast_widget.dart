@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/domain/api_client/image_downloader.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
 import 'package:provider/provider.dart';
+
+import 'package:moviedb/domain/api_client/image_downloader.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_cubit.dart';
 
 class TvShowDetailsMainScreenCastWidget extends StatelessWidget {
   const TvShowDetailsMainScreenCastWidget({Key? key}) : super(key: key);
@@ -47,7 +48,7 @@ class _ActorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data =
-        context.select((TvShowDetailsModel model) => model.data.actorData);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.actorData);
 
     if (data.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
@@ -70,8 +71,8 @@ class _ActorItemListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<TvShowDetailsModel>();
-    final actor = model.data.actorData[actorIndex];
+    final cubit = context.read<TVShowDetailsCubit>();
+    final actor = cubit.data.actorData[actorIndex];
     final profilePath = actor.profilePath;
     return Padding(
       padding: const EdgeInsets.all(8.0),

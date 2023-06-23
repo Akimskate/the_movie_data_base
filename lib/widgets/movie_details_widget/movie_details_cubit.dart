@@ -129,12 +129,12 @@ class MovieDetailsCubitState {
 
 class MovieDetailsCubit extends Cubit<MovieDetailsCubitState> {
   final int movieId;
+  final MovieDetailsBloc movieDetailsBloc;
   final data = MovieDetailsData();
   final _localeStorage = LocalizedModelStorage();
-  late DateFormat _dateFormat;
   final _authService = AuthService();
   final _movieService = MovieService();
-  final MovieDetailsBloc movieDetailsBloc;
+  late DateFormat _dateFormat;
   late final StreamSubscription<MovieDetailsState> movieDetailsBlocSubscription;
 
   MovieDetailsCubit({

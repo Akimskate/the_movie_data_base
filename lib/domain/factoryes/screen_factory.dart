@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moviedb/domain/blocs/movie_details_bloc/movie_details_bloc.dart';
-import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
-import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_state.dart';
-import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_bloc.dart';
-import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_state.dart';
-import 'package:moviedb/domain/services/movie_service.dart';
-import 'package:moviedb/widgets/movie_details_widget/movie_details_cubit.dart';
-import 'package:moviedb/widgets/movie_list/movie_list_cubit.dart';
-import 'package:moviedb/widgets/tvshows/tv_shows_list_cubit.dart';
-import 'package:provider/provider.dart';
 
 import 'package:moviedb/domain/blocs/auth_bloc/auth_bloc.dart';
 import 'package:moviedb/domain/blocs/auth_bloc/auth_state.dart';
+import 'package:moviedb/domain/blocs/movie_details_bloc/movie_details_bloc.dart';
+import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
+import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_state.dart';
+import 'package:moviedb/domain/blocs/tv_show_details_bloc/tv_show_details_bloc.dart';
+import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_bloc.dart';
+import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_state.dart';
+import 'package:moviedb/domain/services/movie_service.dart';
+import 'package:moviedb/domain/services/show_service.dart';
 import 'package:moviedb/widgets/auth/auth_view_cubit.dart';
 import 'package:moviedb/widgets/auth/auth_widget.dart';
 import 'package:moviedb/widgets/auth/main_screen/main_screen_widget.dart';
 import 'package:moviedb/widgets/loader_widget/loader_view_cubit.dart';
 import 'package:moviedb/widgets/loader_widget/loader_widget.dart';
+import 'package:moviedb/widgets/movie_details_widget/movie_details_cubit.dart';
 import 'package:moviedb/widgets/movie_details_widget/movie_details_widget.dart';
+import 'package:moviedb/widgets/movie_list/movie_list_cubit.dart';
 import 'package:moviedb/widgets/movie_list/movie_list_widget.dart';
 import 'package:moviedb/widgets/movie_trailers/movie_trailer_widget.dart';
 import 'package:moviedb/widgets/news/news_widget.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_cubit.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
+import 'package:moviedb/widgets/tvshows/tv_shows_list_cubit.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_widget.dart';
 
 class ScreenFactory {
@@ -68,8 +69,12 @@ class ScreenFactory {
   }
 
   Widget makeShowDetails(int showId) {
-    return ChangeNotifierProvider(
-      create: (_) => TvShowDetailsModel(showId),
+    final showDetailsBloc = TVShowDetailsBloc(showId, ShowService());
+    return BlocProvider<TVShowDetailsCubit>(
+      create: (_) => TVShowDetailsCubit(
+        showId: showId,
+        showDetailsBloc: showDetailsBloc,
+      ),
       child: const TvShowDetailsWidget(),
     );
   }

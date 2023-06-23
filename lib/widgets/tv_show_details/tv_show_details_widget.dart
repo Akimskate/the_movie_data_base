@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_info_widget.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_model.dart';
-import 'package:moviedb/widgets/tv_show_details/tv_show_details_screen_cast_widget.dart';
 import 'package:provider/provider.dart';
+
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_cubit.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_info_widget.dart';
+import 'package:moviedb/widgets/tv_show_details/tv_show_details_screen_cast_widget.dart';
 
 class TvShowDetailsWidget extends StatefulWidget {
   const TvShowDetailsWidget({
@@ -19,7 +20,7 @@ class _TvShowDetailsWidgetState extends State<TvShowDetailsWidget> {
     super.didChangeDependencies();
     final locale = Localizations.localeOf(context);
     Future.microtask(
-        () => context.read<TvShowDetailsModel>().setupLocale(context, locale));
+        () => context.read<TVShowDetailsCubit>().setupLocale(context, locale));
   }
 
   @override
@@ -43,7 +44,7 @@ class _TitleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title =
-        context.select((TvShowDetailsModel model) => model.data.title);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.title);
     return Text(title);
   }
 }
@@ -54,7 +55,7 @@ class _BodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLoading =
-        context.select((TvShowDetailsModel model) => model.data.isLoading);
+        context.select((TVShowDetailsCubit cubit) => cubit.data.isLoading);
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),

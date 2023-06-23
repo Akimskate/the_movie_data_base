@@ -1,9 +1,14 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:moviedb/Library/localized_model.dart';
 import 'package:moviedb/domain/api_client/extension_api_client.dart';
+import 'package:moviedb/domain/blocs/tv_show_details_bloc/tv_show_details_bloc.dart';
+
+import 'package:moviedb/domain/entity/local_entities/tv_show_details_local.dart';
 import 'package:moviedb/domain/entity/tv_show_details.dart';
 import 'package:moviedb/domain/services/auth_service.dart';
 import 'package:moviedb/domain/services/show_service.dart';
@@ -91,16 +96,65 @@ class TvShowDetailsData {
   List<List<TvShowDetailsPeopleData>> peopleData =
       const <List<TvShowDetailsPeopleData>>[];
   List<TvShowDetailsActorData> actorData = const <TvShowDetailsActorData>[];
+
+  static TvShowDetailsData fromLocal(TvShowDetailsLocal? localData) {
+    TvShowDetailsData showDetailsData = TvShowDetailsData();
+    if (localData == null) {
+      return showDetailsData;
+    }
+    return showDetailsData;
+  }
 }
 
-class TvShowDetailsModel extends ChangeNotifier {
-  final authService = AuthService();
-  final showService = ShowService();
+class TVShowDetailsCubitState {
+  final TvShowDetailsData showData;
+  final String localeTag;
+
+  TVShowDetailsCubitState({
+    required this.showData,
+    required this.localeTag,
+  });
+
+  TVShowDetailsCubitState copyWith({
+    TvShowDetailsData? showData,
+    String? localeTag,
+  }) {
+    return TVShowDetailsCubitState(
+      showData: showData ?? this.showData,
+      localeTag: localeTag ?? this.localeTag,
+    );
+  }
+}
+
+class TVShowDetailsCubit extends Cubit<TVShowDetailsCubitState> {
   final int showId;
+  final TVShowDetailsBloc showDetailsBloc;
   final data = TvShowDetailsData();
   final _localeStorage = LocalizedModelStorage();
+  final _authService = AuthService();
+  final _showService = ShowService();
   late DateFormat _dateFormat;
-  TvShowDetailsModel(this.showId);
+  late final StreamSubscription<TVShowDetailsState> showDetailsBlocSubscription;
+
+  TVShowDetailsCubit({
+    required this.showDetailsBloc,
+    required this.showId,
+  }) : super(
+          TVShowDetailsCubitState(
+            showData: TvShowDetailsData(),
+            localeTag: "",
+          ),
+        ) {
+    Future.microtask(() {
+      _onState(showDetailsBloc.state);
+      showDetailsBlocSubscription = showDetailsBloc.stream.listen(_onState);
+    });
+  }
+  void _onState(TVShowDetailsState state) {
+    final showData = TvShowDetailsData.fromLocal(state.details);
+    final newState = this.state.copyWith(showData: showData);
+    emit(newState);
+  }
 
   String stringFromDate(DateTime? date) =>
       date != null ? _dateFormat.format(date) : '';
@@ -114,20 +168,22 @@ class TvShowDetailsModel extends ChangeNotifier {
 
   Future<void> loadDetails(BuildContext context) async {
     try {
-      final ditails = await showService.loadDetailsShow(
+      final details = await _showService.loadDetailsShow(
           showId: showId, locale: _localeStorage.localeTag);
 
-      updateData(ditails.details, ditails.isFavoriteShow);
+      updateData(details.details, details.isFavoriteShow);
     } on ApiClientException catch (e) {
       _handleApiClienException(e, context);
     }
   }
 
   void updateData(TvShowDetails? details, bool isFavoriteShow) {
+    final currentData = data;
+
     data.title = details?.name ?? 'Loading...';
     data.isLoading = details == null;
     if (details == null) {
-      notifyListeners();
+      emit(state.copyWith(showData: currentData));
       return;
     }
     data.overview = details.overview;
@@ -160,8 +216,7 @@ class TvShowDetailsModel extends ChangeNotifier {
           ),
         )
         .toList();
-
-    notifyListeners();
+    emit(state.copyWith(showData: currentData));
   }
 
   String makeSummary(TvShowDetails details) {
@@ -178,7 +233,6 @@ class TvShowDetailsModel extends ChangeNotifier {
     if (details.episodeRunTime != null && details.episodeRunTime!.isNotEmpty) {
       runtime = details.episodeRunTime![0];
     }
-    // final runtime = details.episodeRunTime?[0] ?? 0;
     final duration = Duration(minutes: runtime);
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
@@ -208,12 +262,14 @@ class TvShowDetailsModel extends ChangeNotifier {
   }
 
   Future<void> toggleFavorite(BuildContext context) async {
-    data.posterShowData = data.posterShowData
-        .copyWith(isFavoriteShow: !data.posterShowData.isFavoriteShow);
-    notifyListeners();
+    final currentData = state.showData;
+
+    data.posterShowData = currentData.posterShowData
+        .copyWith(isFavoriteShow: !currentData.posterShowData.isFavoriteShow);
+    emit(state.copyWith(showData: currentData));
     try {
-      await showService.updateFavoriteShow(
-        isFavoriteShow: data.posterShowData.isFavoriteShow,
+      await _showService.updateFavoriteShow(
+        isFavoriteShow: currentData.posterShowData.isFavoriteShow,
         showId: showId,
       );
     } on ApiClientException catch (e) {
@@ -227,7 +283,7 @@ class TvShowDetailsModel extends ChangeNotifier {
   ) {
     switch (exception.type) {
       case ApiClientExceptionType.sessionExpired:
-        authService.logout();
+        _authService.logout();
         MainNavigation.resetNavigation(context);
         break;
       default:
