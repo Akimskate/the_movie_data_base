@@ -54,7 +54,7 @@ class ScreenFactory {
   }
 
   Widget makeMainScreen() {
-    return const MainScreenWidget();
+    return MainScreenWidget();
   }
 
   Widget makeMovieDetails(int movieId) {
