@@ -66,10 +66,8 @@ class DrawerWidget extends StatelessWidget {
                       style: drawerHeaderTextStyle,
                     ),
                   ),
-                  // const SizedBox(height: 20),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -79,7 +77,6 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -89,7 +86,6 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -99,7 +95,6 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -109,7 +104,6 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -119,7 +113,6 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -129,7 +122,6 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -139,7 +131,6 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(
@@ -147,12 +138,8 @@ class DrawerWidget extends StatelessWidget {
                       style: drawerBodyTextStyle,
                     ),
                   ),
-                  // const SizedBox(
-                  //   height: 15
-                  // ),
                   ListTile(
                     onTap: () {
-                      tabCubit.tvShowTabSelected();
                       Navigator.pop(context);
                     },
                     title: const Text(

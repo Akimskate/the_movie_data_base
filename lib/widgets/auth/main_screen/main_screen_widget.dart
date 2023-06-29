@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moviedb/domain/blocs/tab_bloc/tab_cubit.dart';
 import 'package:moviedb/domain/factoryes/screen_factory.dart';
 import 'package:moviedb/domain/services/auth_service.dart';
+import 'package:moviedb/resources/resources.dart';
 import 'package:moviedb/resources/tab_index_converter.dart';
 import 'package:moviedb/widgets/auth/main_screen/drawer_widget.dart';
 
@@ -25,7 +26,7 @@ class MainScreenWidget extends StatelessWidget {
         appBar: AppBar(
           title: IconButton(
             icon: const Image(
-              image: AssetImage('images/tmdb_logo.png'),
+              image: AssetImage(AppImages.imdbLogo),
             ),
             onPressed: () {},
             iconSize: 60,
@@ -37,7 +38,7 @@ class MainScreenWidget extends StatelessWidget {
               icon: const Icon(Icons.logout),
             ),
           ],
-          toolbarHeight: 70,
+          toolbarHeight: 71,
         ),
         body: BlocBuilder<TabSelectedCubit, TabSelectedState>(
           builder: (context, state) {
