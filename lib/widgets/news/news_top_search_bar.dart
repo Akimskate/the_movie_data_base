@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moviedb/domain/services/news_service.dart';
 import 'package:moviedb/resources/resources.dart';
 
 class NewsTopSearchBar extends StatelessWidget {
@@ -14,7 +15,7 @@ class NewsTopSearchBar extends StatelessWidget {
             fit: BoxFit.cover),
         color: Colors.black.withOpacity(1),
       ),
-      height: 300,
+      height: 280,
       child: const Stack(children: [
         Padding(
           padding: EdgeInsets.only(left: 18, top: 30),
@@ -94,15 +95,17 @@ class _SearchField extends StatelessWidget {
                     ],
                   )),
               child: TextButton(
-                child: const Text(
-                  'Search',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
+                  child: const Text(
+                    'Search',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
                   ),
-                ),
-                onPressed: () {},
-              ),
+                  onPressed: () => {
+                        // NewsService().trendingAll().then((result) {
+                        //   print(result.results[1]);
+                      }),
             ),
           ),
         ],

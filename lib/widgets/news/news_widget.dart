@@ -4,7 +4,7 @@ import 'package:moviedb/widgets/news/news_widget_free_to_watch.dart';
 import 'package:moviedb/widgets/news/news_widget_leaderboards.dart';
 import 'package:moviedb/widgets/news/news_widget_popular.dart';
 import 'package:moviedb/widgets/news/news_widget_trailers.dart';
-import 'package:moviedb/widgets/news/news_widget_trandings.dart';
+import 'package:moviedb/widgets/news/news_widget_trendings.dart';
 
 class NewsWidget extends StatelessWidget {
   const NewsWidget({Key? key}) : super(key: key);

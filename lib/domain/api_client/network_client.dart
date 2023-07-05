@@ -18,7 +18,7 @@ class NetworkClient {
     }
   }
 
-   Future<T> get<T>(
+  Future<T> get<T>(
     String path,
     T Function(dynamic json) parser, [
     Map<String, dynamic>? parameters,
@@ -43,6 +43,7 @@ class NetworkClient {
       throw ApiClientException(ApiClientExceptionType.others);
     }
   }
+
   Future<T> post<T>(
     String path,
     Map<String, dynamic> bodyParameters,
@@ -69,27 +70,23 @@ class NetworkClient {
       throw ApiClientException(ApiClientExceptionType.others);
     }
   }
-
 }
 
-
-
-
-  void _validateResponse(HttpClientResponse response, dynamic json) {
-    if (response.statusCode == 401) {
-      final dynamic status = json['status_code'];
-      final dynamic statusMessage = json['status_message'];
-      final code = status is int ? status : 0;
-      print('Message error: ' + statusMessage);
-      if (code == 30) {
-        throw ApiClientException(ApiClientExceptionType.auth);
-      } else if (code == 3) {
-        throw ApiClientException(ApiClientExceptionType.sessionExpired);
-      } else {
-        throw ApiClientException(ApiClientExceptionType.others);
-      }
+void _validateResponse(HttpClientResponse response, dynamic json) {
+  if (response.statusCode == 401) {
+    final dynamic status = json['status_code'];
+    final dynamic statusMessage = json['status_message'];
+    final code = status is int ? status : 0;
+    print('Message error: ' + statusMessage);
+    if (code == 30) {
+      throw ApiClientException(ApiClientExceptionType.auth);
+    } else if (code == 3) {
+      throw ApiClientException(ApiClientExceptionType.sessionExpired);
+    } else {
+      throw ApiClientException(ApiClientExceptionType.others);
     }
   }
+}
 
 extension HttpClientResponseJsonDecode on HttpClientResponse {
   Future<dynamic> jsonDecode() async {

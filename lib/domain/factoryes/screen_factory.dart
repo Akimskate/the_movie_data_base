@@ -6,10 +6,12 @@ import 'package:moviedb/domain/blocs/auth_bloc/auth_state.dart';
 import 'package:moviedb/domain/blocs/movie_details_bloc/movie_details_bloc.dart';
 import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
 import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_state.dart';
+import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
 import 'package:moviedb/domain/blocs/tv_show_details_bloc/tv_show_details_bloc.dart';
 import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_bloc.dart';
 import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_state.dart';
 import 'package:moviedb/domain/services/movie_service.dart';
+import 'package:moviedb/domain/services/news_service.dart';
 import 'package:moviedb/domain/services/show_service.dart';
 import 'package:moviedb/widgets/auth/auth_view_cubit.dart';
 import 'package:moviedb/widgets/auth/auth_widget.dart';
@@ -21,7 +23,9 @@ import 'package:moviedb/widgets/movie_details_widget/movie_details_widget.dart';
 import 'package:moviedb/widgets/movie_list/movie_list_cubit.dart';
 import 'package:moviedb/widgets/movie_list/movie_list_widget.dart';
 import 'package:moviedb/widgets/movie_trailers/movie_trailer_widget.dart';
+import 'package:moviedb/widgets/news/news_cubit.dart';
 import 'package:moviedb/widgets/news/news_widget.dart';
+import 'package:moviedb/widgets/news/news_widget_trendings.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_cubit.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_cubit.dart';
@@ -84,7 +88,14 @@ class ScreenFactory {
   }
 
   Widget makeNewsList() {
-    return const NewsWidget();
+    return BlocProvider<TrendingListCubit>(
+      create: (_) => TrendingListCubit(
+          newsBloc: NewsBloc(
+        NewsState.initial(),
+        NewsService(),
+      )),
+      child: const NewsWidget(),
+    );
   }
 
   Widget makeMovieList() {

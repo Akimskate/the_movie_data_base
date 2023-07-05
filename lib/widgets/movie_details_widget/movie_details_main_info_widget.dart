@@ -165,7 +165,7 @@ class _ScoreWidget extends StatelessWidget {
                   lineColor: const Color.fromARGB(255, 37, 203, 103),
                   freeColor: const Color.fromARGB(255, 25, 54, 31),
                   lineWidth: 3,
-                  child: Text(scoreData.voteAverage.toStringAsFixed(0)),
+                  child: Text(scoreData.voteAverage.toStringAsFixed(0) + '%'),
                 ),
               ),
               const SizedBox(width: 10),

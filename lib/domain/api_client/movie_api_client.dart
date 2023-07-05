@@ -5,11 +5,11 @@ import 'package:moviedb/domain/api_client/network_client.dart';
 import 'package:moviedb/domain/entity/movie_details.dart';
 import 'package:moviedb/domain/entity/popular_movie_response.dart';
 
-
 class MovieApiClient {
   final _networkClient = NetworkClient();
 
-  Future<PopularMovieResponse> popularMovie(int page, String locale, String apiKey) async {
+  Future<PopularMovieResponse> popularMovie(
+      int page, String locale, String apiKey) async {
     PopularMovieResponse parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularMovieResponse.fromJson(jsonMap);
