@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
 import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
 import 'package:moviedb/domain/entity/trending.dart';
 
@@ -32,29 +33,35 @@ class TrendingListRowData {
 class TrendingListCubitState {
   final List<TrendingListRowData> trending;
   final String localeTag;
-
+  final bool isLoading;
   TrendingListCubitState({
     required this.trending,
     required this.localeTag,
+    required this.isLoading,
   });
 
   @override
   bool operator ==(covariant TrendingListCubitState other) {
     if (identical(this, other)) return true;
 
-    return listEquals(other.trending, trending) && other.localeTag == localeTag;
+    return listEquals(other.trending, trending) &&
+        other.localeTag == localeTag &&
+        other.isLoading == isLoading;
   }
 
   @override
-  int get hashCode => trending.hashCode ^ localeTag.hashCode;
+  int get hashCode =>
+      trending.hashCode ^ localeTag.hashCode ^ isLoading.hashCode;
 
   TrendingListCubitState copyWith({
     List<TrendingListRowData>? trending,
     String? localeTag,
+    bool? isLoading,
   }) {
     return TrendingListCubitState(
       trending: trending ?? this.trending,
       localeTag: localeTag ?? this.localeTag,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }
@@ -62,11 +69,13 @@ class TrendingListCubitState {
 class TrendingListCubit extends Cubit<TrendingListCubitState> {
   final NewsBloc newsBloc;
   late DateFormat _dateFormat;
+
   late final StreamSubscription<NewsState> newsListBlocSubscription;
   TrendingListCubit({required this.newsBloc})
       : super(TrendingListCubitState(
           trending: const <TrendingListRowData>[],
           localeTag: '',
+          isLoading: true,
         )) {
     Future.microtask(() {
       _onState(newsBloc.state);
@@ -75,7 +84,9 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
   }
   void _onState(NewsState state) {
     final trending = state.trendinList.results.map(_makeRowData).toList();
-    final newState = this.state.copyWith(trending: trending);
+    final newState =
+        this.state.copyWith(trending: trending, isLoading: state.isLoading);
+
     emit(newState);
   }
 

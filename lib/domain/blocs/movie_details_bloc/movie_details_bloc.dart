@@ -19,8 +19,6 @@ class MovieDetailsState {
   final MovieDetailsLocal? details;
   final bool isFavorite;
 
-  // MovieDetailsLocal? get detail => details;
-
   MovieDetailsState({
     required this.isLoading,
     required this.details,

@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:moviedb/domain/entity/trending_responce.dart';
@@ -33,7 +32,7 @@ class NewsState {
           totalPages: 1,
           totalResults: 1,
         ),
-        isLoading = false;
+        isLoading = true;
 
   NewsState copyWith({
     bool? isLoading,

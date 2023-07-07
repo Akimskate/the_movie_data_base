@@ -15,10 +15,10 @@ class NewsTopSearchBar extends StatelessWidget {
             fit: BoxFit.cover),
         color: Colors.black.withOpacity(1),
       ),
-      height: 280,
+      height: 250,
       child: const Stack(children: [
         Padding(
-          padding: EdgeInsets.only(left: 18, top: 30),
+          padding: EdgeInsets.only(left: 18, top: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -26,18 +26,18 @@ class NewsTopSearchBar extends StatelessWidget {
                 'Welcome.',
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 50,
+                    fontSize: 45,
                     fontWeight: FontWeight.bold),
               ),
               Text(
                 'Millions of movies, TV shows and people to discover. Explore Now.',
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 30,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                height: 20,
+                height: 15,
               ),
               _SearchField(),
             ],

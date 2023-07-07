@@ -144,6 +144,16 @@ class RadialPercentWidget extends StatelessWidget {
     required this.lineWidth,
   }) : super(key: key);
 
+  Color getRatingColor(double rating) {
+    if (rating >= 65) {
+      return Colors.green;
+    } else if (rating >= 30) {
+      return Colors.yellow;
+    } else {
+      return Colors.red;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(

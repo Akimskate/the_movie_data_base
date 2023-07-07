@@ -24,6 +24,8 @@ dependencies:
   flutter_bloc: ^8.1.3
   bloc_concurrency: ^0.2.2
   flutter_svg: ^2.0.7
+  draggable_scrollbar: ^0.1.0
+  animations: ^2.0.7
 
 dev_dependencies:
   flutter_test:
