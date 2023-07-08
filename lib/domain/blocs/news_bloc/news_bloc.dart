@@ -6,7 +6,11 @@ import 'package:moviedb/domain/services/news_service.dart';
 
 abstract class NewsEvent {}
 
-class FetchInitialNewsEvent extends NewsEvent {}
+class FetchInitialNewsEvent extends NewsEvent {
+  final String timeWindow;
+
+  FetchInitialNewsEvent(this.timeWindow);
+}
 
 class UpdateTrendingListEvent extends NewsEvent {}
 
@@ -61,7 +65,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   ) async {
     try {
       emit(state.copyWith(isLoading: true));
-      final fetchedTrandingMovies = await _newsService.trendingAll();
+      final fetchedTrandingMovies =
+          await _newsService.trendingAll(event.timeWindow);
       emit(
           state.copyWith(trendinList: fetchedTrandingMovies, isLoading: false));
     } catch (e) {

@@ -55,11 +55,13 @@ class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
     super.didChangeDependencies();
 
     final locale = Localizations.localeOf(context);
-    Future.microtask(() =>
-        context.read<TrendingListCubit>().setupLocal(locale.languageCode));
+    Future.microtask(() => context
+        .read<TrendingListCubit>()
+        .setupLocal(locale.languageCode, selectedTimeWindow));
   }
 
-  final _category = 'today';
+  // final _category = 'today';
+  String selectedTimeWindow = 'day';
   @override
   Widget build(BuildContext context) {
     final cubit = context.watch<TrendingListCubit>();
@@ -87,10 +89,17 @@ class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
               DropdownButton<String>(
-                value: _category,
-                onChanged: (category) {},
+                value: selectedTimeWindow,
+                onChanged: (value) {
+                  setState(() {
+                    selectedTimeWindow = value!;
+                  });
+                  context
+                      .read<NewsBloc>()
+                      .add(FetchInitialNewsEvent(selectedTimeWindow));
+                },
                 items: const [
-                  DropdownMenuItem(value: 'today', child: Text('Today')),
+                  DropdownMenuItem(value: 'day', child: Text('Today')),
                   DropdownMenuItem(value: 'week', child: Text('This Week')),
                 ],
               ),

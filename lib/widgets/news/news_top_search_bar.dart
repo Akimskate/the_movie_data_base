@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/domain/services/news_service.dart';
 import 'package:moviedb/resources/resources.dart';
 
 class NewsTopSearchBar extends StatelessWidget {

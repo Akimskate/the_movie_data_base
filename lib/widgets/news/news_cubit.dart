@@ -96,12 +96,12 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
     return super.close();
   }
 
-  void setupLocal(String localeTag) {
+  void setupLocal(String localeTag, String timeWindow) {
     if (state.localeTag == localeTag) return;
     final newState = state.copyWith(localeTag: localeTag);
     emit(newState);
     _dateFormat = DateFormat.yMMMMd(localeTag);
-    newsBloc.add(FetchInitialNewsEvent());
+    newsBloc.add(FetchInitialNewsEvent(timeWindow));
   }
 
   TrendingListRowData _makeRowData(Trending trending) {

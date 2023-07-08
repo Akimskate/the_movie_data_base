@@ -5,8 +5,10 @@ class NewsApiClient {
   final _netWorkCliet = NetworkClient();
 
   Future<TrendingResponce> trendingAll(
-      // String timeWindow, String locale,
-      String apiKey) async {
+    // String timeWindow, String locale,
+    String apiKey,
+    String timeWindow,
+  ) async {
     TrendingResponce parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = TrendingResponce.fromJson(jsonMap);
@@ -14,12 +16,12 @@ class NewsApiClient {
     }
 
     final result = await _netWorkCliet.get(
-      '/trending/all/day',
+      '/trending/all/$timeWindow',
       parser,
       <String, dynamic>{
-        //'time_window': timeWindow,
         // 'page': page.toString(),
         //'language': locale,
+        'time_window': timeWindow,
         'api_key': apiKey,
       },
     );

@@ -88,13 +88,16 @@ class ScreenFactory {
   }
 
   Widget makeNewsList() {
-    return BlocProvider<TrendingListCubit>(
-      create: (_) => TrendingListCubit(
-          newsBloc: NewsBloc(
-        NewsState.initial(),
-        NewsService(),
-      )),
-      child: const NewsWidget(),
+    final newsBloc = NewsBloc(
+      NewsState.initial(),
+      NewsService(),
+    );
+    return BlocProvider<NewsBloc>.value(
+      value: newsBloc,
+      child: BlocProvider<TrendingListCubit>(
+        create: (_) => TrendingListCubit(newsBloc: newsBloc),
+        child: const NewsWidget(),
+      ),
     );
   }
 
