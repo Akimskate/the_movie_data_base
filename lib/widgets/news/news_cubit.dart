@@ -34,10 +34,12 @@ class TrendingListCubitState {
   final List<TrendingListRowData> trending;
   final String localeTag;
   final bool isLoading;
+  final String selectedTiwmeWindow;
   TrendingListCubitState({
     required this.trending,
     required this.localeTag,
     required this.isLoading,
+    required this.selectedTiwmeWindow,
   });
 
   @override
@@ -46,22 +48,29 @@ class TrendingListCubitState {
 
     return listEquals(other.trending, trending) &&
         other.localeTag == localeTag &&
-        other.isLoading == isLoading;
+        other.isLoading == isLoading &&
+        other.selectedTiwmeWindow == selectedTiwmeWindow;
   }
 
   @override
-  int get hashCode =>
-      trending.hashCode ^ localeTag.hashCode ^ isLoading.hashCode;
+  int get hashCode {
+    return trending.hashCode ^
+        localeTag.hashCode ^
+        isLoading.hashCode ^
+        selectedTiwmeWindow.hashCode;
+  }
 
   TrendingListCubitState copyWith({
     List<TrendingListRowData>? trending,
     String? localeTag,
     bool? isLoading,
+    String? selectedTiwmeWindow,
   }) {
     return TrendingListCubitState(
       trending: trending ?? this.trending,
       localeTag: localeTag ?? this.localeTag,
       isLoading: isLoading ?? this.isLoading,
+      selectedTiwmeWindow: selectedTiwmeWindow ?? this.selectedTiwmeWindow,
     );
   }
 }
@@ -76,6 +85,7 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
           trending: const <TrendingListRowData>[],
           localeTag: '',
           isLoading: true,
+          selectedTiwmeWindow: '',
         )) {
     Future.microtask(() {
       _onState(newsBloc.state);
@@ -102,6 +112,7 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
     emit(newState);
     _dateFormat = DateFormat.yMMMMd(localeTag);
     newsBloc.add(FetchInitialNewsEvent(timeWindow));
+    newsBloc.add(ToggleTrendingMoviesEvent(timeWindow));
   }
 
   TrendingListRowData _makeRowData(Trending trending) {

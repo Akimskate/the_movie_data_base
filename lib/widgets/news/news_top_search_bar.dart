@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moviedb/Theme/app_colors.dart';
 import 'package:moviedb/resources/resources.dart';
 
 class NewsTopSearchBar extends StatelessWidget {
@@ -89,8 +90,8 @@ class _SearchField extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      Color.fromARGB(255, 124, 245, 128),
-                      Color.fromARGB(255, 81, 174, 250)
+                      AppColors.firstMainGradientColor,
+                      AppColors.secondMainGradientColor,
                     ],
                   )),
               child: TextButton(
