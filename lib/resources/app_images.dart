@@ -10,4 +10,5 @@ class AppImages {
   static const String topHeader = 'images/top_header.jpg';
   static const String topHeader1 = 'images/top_header1.jpg';
   static const String topNewsSearchBarBackground = 'images/search_bar.jpg';
+  static const String upcomingTrailersBackGround = 'images/hobbit_poster.jpg';
 }
