@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
+import 'package:moviedb/domain/entity/movie.dart';
 import 'package:moviedb/domain/entity/trending.dart';
+import 'package:moviedb/domain/entity/tv_show.dart';
 
 class TrendingListRowData {
   final int id;
@@ -30,16 +32,54 @@ class TrendingListRowData {
   });
 }
 
+class TopRatedMovieListRowData {
+  final int id;
+  final String? posterPath;
+  final String? title;
+  final String? releaseDate;
+  final double voteAverage;
+
+  TopRatedMovieListRowData({
+    required this.id,
+    required this.posterPath,
+    required this.title,
+    required this.releaseDate,
+    required this.voteAverage,
+  });
+}
+
+class TopRatedTVShowListRowData {
+  final int id;
+  final String? posterPath;
+  final String? name;
+  final String? firstAirDate;
+  final double voteAverage;
+
+  TopRatedTVShowListRowData({
+    required this.id,
+    this.posterPath,
+    required this.name,
+    required this.firstAirDate,
+    required this.voteAverage,
+  });
+}
+
 class TrendingListCubitState {
   final List<TrendingListRowData> trending;
+  final List<TopRatedMovieListRowData> topRatedMovies;
+  final List<TopRatedTVShowListRowData> topRatedTVShows;
   final String localeTag;
   final bool isLoading;
   final String selectedTiwmeWindow;
+  final String selectedMediaType;
   TrendingListCubitState({
     required this.trending,
+    required this.topRatedMovies,
+    required this.topRatedTVShows,
     required this.localeTag,
     required this.isLoading,
     required this.selectedTiwmeWindow,
+    required this.selectedMediaType,
   });
 
   @override
@@ -47,30 +87,42 @@ class TrendingListCubitState {
     if (identical(this, other)) return true;
 
     return listEquals(other.trending, trending) &&
+        listEquals(other.topRatedMovies, topRatedMovies) &&
+        listEquals(other.topRatedTVShows, topRatedTVShows) &&
         other.localeTag == localeTag &&
         other.isLoading == isLoading &&
-        other.selectedTiwmeWindow == selectedTiwmeWindow;
+        other.selectedTiwmeWindow == selectedTiwmeWindow &&
+        other.selectedMediaType == selectedMediaType;
   }
 
   @override
   int get hashCode {
     return trending.hashCode ^
+        topRatedMovies.hashCode ^
+        topRatedTVShows.hashCode ^
         localeTag.hashCode ^
         isLoading.hashCode ^
-        selectedTiwmeWindow.hashCode;
+        selectedTiwmeWindow.hashCode ^
+        selectedMediaType.hashCode;
   }
 
   TrendingListCubitState copyWith({
     List<TrendingListRowData>? trending,
+    List<TopRatedMovieListRowData>? topRatedMovies,
+    List<TopRatedTVShowListRowData>? topRatedTVShows,
     String? localeTag,
     bool? isLoading,
     String? selectedTiwmeWindow,
+    String? selectedMediaType,
   }) {
     return TrendingListCubitState(
       trending: trending ?? this.trending,
+      topRatedMovies: topRatedMovies ?? this.topRatedMovies,
+      topRatedTVShows: topRatedTVShows ?? this.topRatedTVShows,
       localeTag: localeTag ?? this.localeTag,
       isLoading: isLoading ?? this.isLoading,
       selectedTiwmeWindow: selectedTiwmeWindow ?? this.selectedTiwmeWindow,
+      selectedMediaType: selectedMediaType ?? this.selectedMediaType,
     );
   }
 }
@@ -82,20 +134,30 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
   late final StreamSubscription<NewsState> newsListBlocSubscription;
   TrendingListCubit({required this.newsBloc})
       : super(TrendingListCubitState(
-          trending: const <TrendingListRowData>[],
-          localeTag: '',
-          isLoading: true,
-          selectedTiwmeWindow: '',
-        )) {
+            trending: const <TrendingListRowData>[],
+            topRatedMovies: const <TopRatedMovieListRowData>[],
+            topRatedTVShows: const <TopRatedTVShowListRowData>[],
+            localeTag: '',
+            isLoading: true,
+            selectedTiwmeWindow: '',
+            selectedMediaType: '')) {
     Future.microtask(() {
       _onState(newsBloc.state);
       newsListBlocSubscription = newsBloc.stream.listen(_onState);
     });
   }
   void _onState(NewsState state) {
-    final trending = state.trendinList.results.map(_makeRowData).toList();
-    final newState =
-        this.state.copyWith(trending: trending, isLoading: state.isLoading);
+    final trending =
+        state.trendinList.results.map(_makeTrendingRowData).toList();
+    final topRatedMovies =
+        state.topRatedMovies.movie.map(_makeTopRatedMoviesRowData).toList();
+    final topRatedTVShows =
+        state.topRatedTVShows.tvShows.map(_makeTopRatedTVShowsRowData).toList();
+    final newState = this.state.copyWith(
+        trending: trending,
+        topRatedMovies: topRatedMovies,
+        topRatedTVShows: topRatedTVShows,
+        isLoading: state.isLoading);
 
     emit(newState);
   }
@@ -115,7 +177,7 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
     newsBloc.add(ToggleTrendingMoviesEvent(timeWindow));
   }
 
-  TrendingListRowData _makeRowData(Trending trending) {
+  TrendingListRowData _makeTrendingRowData(Trending trending) {
     final releaseDate = trending.releaseDate;
     final firstAirDate = trending.firstAirDate;
     final airDateTitle = trending.mediaType == 'tv' && firstAirDate != null
@@ -135,6 +197,34 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
       voteAverage: trending.voteAverage,
       title: trending.title,
       name: trending.name,
+    );
+  }
+
+  TopRatedMovieListRowData _makeTopRatedMoviesRowData(Movie movie) {
+    final releaseDate = movie.releaseDate;
+    final releaseDateTitle =
+        releaseDate != null ? _dateFormat.format(releaseDate) : '';
+
+    return TopRatedMovieListRowData(
+      id: movie.id,
+      posterPath: movie.posterPath,
+      releaseDate: releaseDateTitle,
+      voteAverage: movie.voteAverage,
+      title: movie.title,
+    );
+  }
+
+  TopRatedTVShowListRowData _makeTopRatedTVShowsRowData(TvShow show) {
+    final firstairDate = show.firstairDate;
+    final firstairDateTitle =
+        firstairDate != null ? _dateFormat.format(firstairDate) : '';
+
+    return TopRatedTVShowListRowData(
+      id: show.id,
+      posterPath: show.posterPath,
+      firstAirDate: firstairDateTitle,
+      voteAverage: show.voteAverage,
+      name: show.name,
     );
   }
 }

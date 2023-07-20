@@ -51,7 +51,7 @@ Map<String, dynamic> _$TrendingToJson(Trending instance) {
   val['media_type'] = instance.mediaType;
   val['genre_ids'] = instance.genreIds;
   val['popularity'] = instance.popularity;
-  val['fist_air_date'] = instance.firstAirDate?.toIso8601String();
+  val['first_air_date'] = instance.firstAirDate?.toIso8601String();
   val['release_date'] = instance.releaseDate?.toIso8601String();
   writeNotNull('video', instance.video);
   val['vote_average'] = instance.voteAverage;

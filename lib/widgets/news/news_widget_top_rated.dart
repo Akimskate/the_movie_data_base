@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
+
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/elements/custom_toggle_swich.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
@@ -8,14 +9,14 @@ import 'package:moviedb/utils/get_rating_color.dart';
 import 'package:moviedb/widgets/news/news_cubit.dart';
 import 'package:provider/provider.dart';
 
-class NewsWidgetTrandings extends StatefulWidget {
-  const NewsWidgetTrandings({Key? key}) : super(key: key);
+class NewsWidgetTopRated extends StatefulWidget {
+  const NewsWidgetTopRated({Key? key}) : super(key: key);
 
   @override
-  _NewsWidgetTrandingsState createState() => _NewsWidgetTrandingsState();
+  _NewsWidgetTopRatedState createState() => _NewsWidgetTopRatedState();
 }
 
-class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
+class _NewsWidgetTopRatedState extends State<NewsWidgetTopRated>
     with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
@@ -50,18 +51,24 @@ class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
     final locale = Localizations.localeOf(context);
     Future.microtask(() => context
         .read<TrendingListCubit>()
-        .setupLocal(locale.languageCode, selectedTimeWindow));
+        .setupLocal(locale.languageCode, selectedMediaType));
   }
 
-  void handleTimeWindowChange(String selectedTimeWindow) {
-    this.selectedTimeWindow = selectedTimeWindow;
-    context.read<NewsBloc>().add(ToggleTrendingMoviesEvent(selectedTimeWindow));
+  void handleMediaTypeChange(String selectedMediaType) {
+    setState(() {
+      this.selectedMediaType = selectedMediaType;
+    });
+    context
+        .read<NewsBloc>()
+        .add(ToggleTopRatedMediaTypeEvent(selectedMediaType));
   }
 
-  String selectedTimeWindow = 'day';
+  String selectedMediaType = 'movie';
   @override
   Widget build(BuildContext context) {
     final cubit = context.watch<TrendingListCubit>();
+    final selectedMediaType =
+        context.select((NewsBloc bloc) => bloc.state.selectedMediaType);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,37 +79,40 @@ class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Trending',
+                'Top Rated',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
               SizedBox(
                   child: ToggleButton(
-                button1Label: 'Today',
-                button1Value: 'day',
-                button2Label: 'This Week',
-                button2Value: 'week',
-                onTimeWindowChanged: handleTimeWindowChange,
-                selectedValue: cubit.state.selectedTiwmeWindow,
+                button1Label: 'Movies',
+                button1Value: 'movies',
+                button2Label: 'TV',
+                button2Value: 'tv',
+                onTimeWindowChanged: handleMediaTypeChange,
+                selectedValue: cubit.state.selectedMediaType,
               )),
             ],
           ),
         ),
         const SizedBox(height: 10),
-        _TrendingHorizontalResults(
-            scrollController: _scrollController,
-            cubit: cubit,
-            animation: _animation),
+        _TopRatedHorizontalResults(
+          scrollController: _scrollController,
+          cubit: cubit,
+          animation: _animation,
+          selectedMediaType: selectedMediaType,
+        ),
       ],
     );
   }
 }
 
-class _TrendingHorizontalResults extends StatelessWidget {
-  const _TrendingHorizontalResults({
+class _TopRatedHorizontalResults extends StatelessWidget {
+  const _TopRatedHorizontalResults({
     Key? key,
     required ScrollController scrollController,
     required this.cubit,
     required Animation<double> animation,
+    required this.selectedMediaType,
   })  : _scrollController = scrollController,
         _animation = animation,
         super(key: key);
@@ -110,19 +120,25 @@ class _TrendingHorizontalResults extends StatelessWidget {
   final ScrollController _scrollController;
   final TrendingListCubit cubit;
   final Animation<double> _animation;
+  final String selectedMediaType;
 
   @override
   Widget build(BuildContext context) {
     final isLoading =
         context.select((TrendingListCubit cubit) => cubit.state.isLoading);
+
     if (isLoading) {
       return const SizedBox(
-        height: 350,
+        height: 600,
         child: Center(
           child: CircularProgressIndicator(),
         ),
       );
     }
+
+    final topRated = selectedMediaType == 'movies'
+        ? cubit.state.topRatedMovies
+        : cubit.state.topRatedTVShows;
 
     return SizedBox(
       height: 350,
@@ -135,13 +151,22 @@ class _TrendingHorizontalResults extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           reverse: false,
           scrollDirection: Axis.horizontal,
-          itemCount: cubit.state.trending.length,
+          itemCount: topRated.length,
           itemExtent: 170,
           controller: _scrollController,
           itemBuilder: (BuildContext context, int index) {
-            final trending = cubit.state.trending[index];
-            final posterPath = trending.posterPath;
-            final scoreData = trending.voteAverage * 10;
+            final topRatedItem = topRated[index];
+            final posterPath = topRatedItem is TopRatedMovieListRowData
+                ? topRatedItem.posterPath
+                : topRatedItem is TopRatedTVShowListRowData
+                    ? topRatedItem.posterPath
+                    : null;
+            final scoreData = (topRatedItem is TopRatedMovieListRowData
+                    ? topRatedItem.voteAverage
+                    : topRatedItem is TopRatedTVShowListRowData
+                        ? topRatedItem.voteAverage
+                        : 0) *
+                10;
             return FadeTransition(
               opacity: _animation,
               child: Padding(
@@ -168,15 +193,19 @@ class _TrendingHorizontalResults extends StatelessWidget {
                                   InkWell(
                                       borderRadius: BorderRadius.circular(10),
                                       onTap: () {
-                                        trending.mediaType == 'movie'
-                                            ? _onMoviePosterTap(
-                                                context,
-                                                trending.id,
-                                              )
-                                            : _onTVShowPosterTap(
-                                                context,
-                                                trending.id,
-                                              );
+                                        if (topRatedItem
+                                            is TopRatedMovieListRowData) {
+                                          _onMoviePosterTap(
+                                            context,
+                                            topRatedItem.id,
+                                          );
+                                        } else if (topRatedItem
+                                            is TopRatedTVShowListRowData) {
+                                          _onTVShowPosterTap(
+                                            context,
+                                            topRatedItem.id,
+                                          );
+                                        }
                                       }),
                                 ])),
                           ),
@@ -188,10 +217,9 @@ class _TrendingHorizontalResults extends StatelessWidget {
                             width: 40,
                             height: 40,
                             child: RadialPercentWidget(
-                              percent: trending.voteAverage / 10,
+                              percent: scoreData / 10,
                               fillColor: const Color.fromARGB(255, 10, 23, 25),
-                              lineColor:
-                                  getRatingColor(trending.voteAverage * 10),
+                              lineColor: getRatingColor(scoreData * 10),
                               freeColor: const Color.fromARGB(255, 25, 54, 31),
                               lineWidth: 4,
                               child: Text(
@@ -210,7 +238,11 @@ class _TrendingHorizontalResults extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(left: 10, top: 10, right: 10),
                       child: Text(
-                        trending.title ?? trending.name ?? '',
+                        topRatedItem is TopRatedMovieListRowData
+                            ? topRatedItem.title ?? ''
+                            : topRatedItem is TopRatedTVShowListRowData
+                                ? topRatedItem.name ?? ''
+                                : '',
                         maxLines: 2,
                         style: const TextStyle(
                             fontWeight: FontWeight.w800, fontSize: 16),
@@ -220,7 +252,12 @@ class _TrendingHorizontalResults extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(left: 10, top: 10, right: 10),
                       child: Text(
-                          trending.releaseDate ?? trending.firstAirDate ?? ''),
+                        topRatedItem is TopRatedMovieListRowData
+                            ? topRatedItem.releaseDate ?? ''
+                            : topRatedItem is TopRatedTVShowListRowData
+                                ? topRatedItem.firstAirDate ?? ''
+                                : '',
+                      ),
                     ),
                   ],
                 ),
@@ -231,6 +268,10 @@ class _TrendingHorizontalResults extends StatelessWidget {
       ),
     );
   }
+}
+
+String formatDate(DateTime? date) {
+  return date != null ? '${date.day}.${date.month}.${date.year}' : '';
 }
 
 void _onMoviePosterTap(BuildContext context, int movieId) {
