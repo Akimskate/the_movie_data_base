@@ -17,8 +17,8 @@ class NewsWidget extends StatelessWidget {
         NewsWidgetTrandings(),
         NewsWidgetTrailers(),
         NewsWidgetTopRated(),
-        // NewsWidgetPopular(),
-        //NewsWidgetLeaderboards(),
+        NewsWidgetPopular(),
+        NewsWidgetLeaderboards(),
       ],
     );
   }

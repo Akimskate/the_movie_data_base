@@ -51,75 +51,72 @@ class _NewsWidgetTrailersState extends State<NewsWidgetTrailers> {
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        height: 50,
-                        child: Column(
-                          children: [
-                            Stack(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 20),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: const Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Image(
-                                          image: AssetImage(AppImages.img),
+                      child: Column(
+                        children: [
+                          Stack(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: const Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Image(
+                                        image: AssetImage(AppImages.img),
+                                      ),
+                                      DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 20,
+                                                spreadRadius: -20),
+                                          ],
                                         ),
-                                        DecoratedBox(
-                                          decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 20,
-                                                  spreadRadius: -20),
-                                            ],
-                                          ),
-                                          child: Icon(
-                                            Icons.play_arrow_rounded,
-                                            color: Colors.white,
-                                            size: 80,
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                        child: Icon(
+                                          Icons.play_arrow_rounded,
+                                          color: Colors.white,
+                                          size: 80,
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
-                                Positioned(
-                                  top: 15,
-                                  right: 15,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.withOpacity(0.7),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: const Icon(Icons.more_horiz),
+                              ),
+                              Positioned(
+                                top: 15,
+                                right: 15,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
+                                  child: const Icon(Icons.more_horiz),
                                 ),
-                              ],
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            'Elite',
+                            maxLines: 2,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
                             ),
-                            const Text(
-                              'Elite',
-                              maxLines: 2,
+                          ),
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(left: 10, top: 10, right: 10),
+                            child: Text(
+                              'Elite Season 4 | Trailter | Netflix',
                               style: TextStyle(
-                                fontSize: 20,
                                 color: Colors.white,
+                                fontSize: 17,
                               ),
                             ),
-                            const Padding(
-                              padding:
-                                  EdgeInsets.only(left: 10, top: 10, right: 10),
-                              child: Text(
-                                'Elite Season 4 | Trailter | Netflix',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   },

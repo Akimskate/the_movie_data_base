@@ -81,7 +81,7 @@ class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
                 button1Value: 'day',
                 button2Label: 'This Week',
                 button2Value: 'week',
-                onTimeWindowChanged: handleTimeWindowChange,
+                onValueChange: handleTimeWindowChange,
                 selectedValue: cubit.state.selectedTiwmeWindow,
               )),
             ],

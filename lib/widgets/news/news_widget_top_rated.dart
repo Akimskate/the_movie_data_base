@@ -49,15 +49,16 @@ class _NewsWidgetTopRatedState extends State<NewsWidgetTopRated>
     super.didChangeDependencies();
 
     final locale = Localizations.localeOf(context);
+    final timeWindow =
+        context.read<TrendingListCubit>().state.selectedTiwmeWindow;
     Future.microtask(() => context
         .read<TrendingListCubit>()
-        .setupLocal(locale.languageCode, selectedMediaType));
+        .setupLocal(locale.languageCode, timeWindow));
   }
 
   void handleMediaTypeChange(String selectedMediaType) {
-    setState(() {
-      this.selectedMediaType = selectedMediaType;
-    });
+    this.selectedMediaType = selectedMediaType;
+
     context
         .read<NewsBloc>()
         .add(ToggleTopRatedMediaTypeEvent(selectedMediaType));
@@ -88,7 +89,7 @@ class _NewsWidgetTopRatedState extends State<NewsWidgetTopRated>
                 button1Value: 'movies',
                 button2Label: 'TV',
                 button2Value: 'tv',
-                onTimeWindowChanged: handleMediaTypeChange,
+                onValueChange: handleMediaTypeChange,
                 selectedValue: cubit.state.selectedMediaType,
               )),
             ],

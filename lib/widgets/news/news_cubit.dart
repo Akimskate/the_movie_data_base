@@ -174,7 +174,6 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
     emit(newState);
     _dateFormat = DateFormat.yMMMMd(localeTag);
     newsBloc.add(FetchInitialNewsEvent(timeWindow));
-    newsBloc.add(ToggleTrendingMoviesEvent(timeWindow));
   }
 
   TrendingListRowData _makeTrendingRowData(Trending trending) {

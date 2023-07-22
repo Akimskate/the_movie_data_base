@@ -92,12 +92,15 @@ class ScreenFactory {
       NewsState.initial(),
       NewsService(),
     );
-    return BlocProvider<NewsBloc>.value(
-      value: newsBloc,
-      child: BlocProvider<TrendingListCubit>(
-        create: (_) => TrendingListCubit(newsBloc: newsBloc),
-        child: const NewsWidget(),
-      ),
+
+    final trendingListCubit = TrendingListCubit(newsBloc: newsBloc);
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<NewsBloc>.value(value: newsBloc),
+        BlocProvider<TrendingListCubit>.value(value: trendingListCubit),
+      ],
+      child: const NewsWidget(),
     );
   }
 
