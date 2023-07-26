@@ -9,6 +9,7 @@ import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
 import 'package:moviedb/domain/entity/movie.dart';
 import 'package:moviedb/domain/entity/trending.dart';
 import 'package:moviedb/domain/entity/tv_show.dart';
+import 'package:moviedb/domain/entity/upcoming_movies.dart';
 
 class TrendingListRowData {
   final int id;
@@ -29,6 +30,21 @@ class TrendingListRowData {
     required this.firstAirDate,
     required this.mediaType,
     required this.voteAverage,
+  });
+}
+
+class UpcomingMovieListRowData {
+  final int id;
+  final String? backDropPath;
+  final String? title;
+  final String? releaseDate;
+  //final String? youtubeKey;
+  UpcomingMovieListRowData({
+    required this.id,
+    this.backDropPath,
+    this.title,
+    this.releaseDate,
+    //this.youtubeKey,
   });
 }
 
@@ -66,6 +82,7 @@ class TopRatedTVShowListRowData {
 
 class TrendingListCubitState {
   final List<TrendingListRowData> trending;
+  final List<UpcomingMovieListRowData> upcomingMovieTrailers;
   final List<TopRatedMovieListRowData> topRatedMovies;
   final List<TopRatedTVShowListRowData> topRatedTVShows;
   final String localeTag;
@@ -74,6 +91,7 @@ class TrendingListCubitState {
   final String selectedMediaType;
   TrendingListCubitState({
     required this.trending,
+    required this.upcomingMovieTrailers,
     required this.topRatedMovies,
     required this.topRatedTVShows,
     required this.localeTag,
@@ -87,6 +105,7 @@ class TrendingListCubitState {
     if (identical(this, other)) return true;
 
     return listEquals(other.trending, trending) &&
+        listEquals(other.upcomingMovieTrailers, upcomingMovieTrailers) &&
         listEquals(other.topRatedMovies, topRatedMovies) &&
         listEquals(other.topRatedTVShows, topRatedTVShows) &&
         other.localeTag == localeTag &&
@@ -98,6 +117,7 @@ class TrendingListCubitState {
   @override
   int get hashCode {
     return trending.hashCode ^
+        upcomingMovieTrailers.hashCode ^
         topRatedMovies.hashCode ^
         topRatedTVShows.hashCode ^
         localeTag.hashCode ^
@@ -108,6 +128,7 @@ class TrendingListCubitState {
 
   TrendingListCubitState copyWith({
     List<TrendingListRowData>? trending,
+    List<UpcomingMovieListRowData>? upcomingMovieTrailers,
     List<TopRatedMovieListRowData>? topRatedMovies,
     List<TopRatedTVShowListRowData>? topRatedTVShows,
     String? localeTag,
@@ -117,6 +138,8 @@ class TrendingListCubitState {
   }) {
     return TrendingListCubitState(
       trending: trending ?? this.trending,
+      upcomingMovieTrailers:
+          upcomingMovieTrailers ?? this.upcomingMovieTrailers,
       topRatedMovies: topRatedMovies ?? this.topRatedMovies,
       topRatedTVShows: topRatedTVShows ?? this.topRatedTVShows,
       localeTag: localeTag ?? this.localeTag,
@@ -135,6 +158,7 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
   TrendingListCubit({required this.newsBloc})
       : super(TrendingListCubitState(
             trending: const <TrendingListRowData>[],
+            upcomingMovieTrailers: const <UpcomingMovieListRowData>[],
             topRatedMovies: const <TopRatedMovieListRowData>[],
             topRatedTVShows: const <TopRatedTVShowListRowData>[],
             localeTag: '',
@@ -149,12 +173,16 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
   void _onState(NewsState state) {
     final trending =
         state.trendinList.results.map(_makeTrendingRowData).toList();
+    final upcomigMovieTrailers = state.upcomingMovies.results
+        .map(_makeUpcomingMoviesTrailersRowData)
+        .toList();
     final topRatedMovies =
         state.topRatedMovies.movie.map(_makeTopRatedMoviesRowData).toList();
     final topRatedTVShows =
         state.topRatedTVShows.tvShows.map(_makeTopRatedTVShowsRowData).toList();
     final newState = this.state.copyWith(
         trending: trending,
+        upcomingMovieTrailers: upcomigMovieTrailers,
         topRatedMovies: topRatedMovies,
         topRatedTVShows: topRatedTVShows,
         isLoading: state.isLoading);
@@ -196,6 +224,21 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
       voteAverage: trending.voteAverage,
       title: trending.title,
       name: trending.name,
+    );
+  }
+
+  UpcomingMovieListRowData _makeUpcomingMoviesTrailersRowData(Results movie) {
+    // String? youtubeKey;
+    // if (movie.videos.results.isNotEmpty) {
+    //   youtubeKey = movie.videos.results[0].key;
+    // }
+
+    return UpcomingMovieListRowData(
+      id: movie.id,
+      backDropPath: movie.backdropPath,
+      title: movie.title,
+      releaseDate: movie.releaseDate,
+      // youtubeKey: youtubeKey,
     );
   }
 

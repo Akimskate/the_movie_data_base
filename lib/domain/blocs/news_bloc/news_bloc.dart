@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moviedb/domain/entity/top_rated_movies.dart';
 import 'package:moviedb/domain/entity/top_rated_tv_responce.dart';
 import 'package:moviedb/domain/entity/trending_responce.dart';
+import 'package:moviedb/domain/entity/upcoming_movies.dart';
 import 'package:moviedb/domain/services/news_service.dart';
 
 abstract class NewsEvent {}
@@ -29,6 +30,7 @@ class ToggleTopRatedMediaTypeEvent extends NewsEvent {
 class NewsState {
   final bool isLoading;
   final TrendingResponce trendinList;
+  final UpcominMovies upcomingMovies;
   final TopRatedMovieResponce topRatedMovies;
   final TopRatedTVResponce topRatedTVShows;
   final String timeWindow;
@@ -37,6 +39,7 @@ class NewsState {
   NewsState({
     required this.isLoading,
     required this.trendinList,
+    required this.upcomingMovies,
     required this.topRatedMovies,
     required this.topRatedTVShows,
     required this.timeWindow,
@@ -50,6 +53,12 @@ class NewsState {
           totalPages: 1,
           totalResults: 1,
         ),
+        upcomingMovies = UpcominMovies(
+            dates: Dates(minimum: '', maximum: ''),
+            page: 1,
+            results: [],
+            totalPages: 1,
+            totalResults: 1),
         topRatedMovies = TopRatedMovieResponce(
           page: 1,
           movie: [],
@@ -72,6 +81,7 @@ class NewsState {
 
     return other.isLoading == isLoading &&
         other.trendinList == trendinList &&
+        other.upcomingMovies == upcomingMovies &&
         other.topRatedMovies == topRatedMovies &&
         other.topRatedTVShows == topRatedTVShows &&
         other.timeWindow == timeWindow &&
@@ -82,6 +92,7 @@ class NewsState {
   int get hashCode {
     return isLoading.hashCode ^
         trendinList.hashCode ^
+        upcomingMovies.hashCode ^
         topRatedMovies.hashCode ^
         topRatedTVShows.hashCode ^
         timeWindow.hashCode ^
@@ -91,6 +102,7 @@ class NewsState {
   NewsState copyWith({
     bool? isLoading,
     TrendingResponce? trendinList,
+    UpcominMovies? upcomingMovies,
     TopRatedMovieResponce? topRatedMovies,
     TopRatedTVResponce? topRatedTVShows,
     String? timeWindow,
@@ -99,6 +111,7 @@ class NewsState {
     return NewsState(
       isLoading: isLoading ?? this.isLoading,
       trendinList: trendinList ?? this.trendinList,
+      upcomingMovies: upcomingMovies ?? this.upcomingMovies,
       topRatedMovies: topRatedMovies ?? this.topRatedMovies,
       topRatedTVShows: topRatedTVShows ?? this.topRatedTVShows,
       timeWindow: timeWindow ?? this.timeWindow,
@@ -124,10 +137,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       emit(state.copyWith(isLoading: true));
       final fetchedTrandingMovies =
           await _newsService.trendingAll(event.timeWindow);
+      final fetchedUpcomingMovies = await _newsService.upcomingMovies();
       final fetchedTopRatedMovies = await _newsService.topRatedMovies();
       final fetchedTopRatedTVshows = await _newsService.topRatedTVShow();
       emit(state.copyWith(
           trendinList: fetchedTrandingMovies,
+          upcomingMovies: fetchedUpcomingMovies,
           topRatedMovies: fetchedTopRatedMovies,
           topRatedTVShows: fetchedTopRatedTVshows,
           isLoading: false));

@@ -2,6 +2,7 @@ import 'package:moviedb/domain/api_client/network_client.dart';
 import 'package:moviedb/domain/entity/top_rated_movies.dart';
 import 'package:moviedb/domain/entity/top_rated_tv_responce.dart';
 import 'package:moviedb/domain/entity/trending_responce.dart';
+import 'package:moviedb/domain/entity/upcoming_movies.dart';
 
 class NewsApiClient {
   final _netWorkCliet = NetworkClient();
@@ -27,6 +28,23 @@ class NewsApiClient {
     return result;
   }
 
+  Future<UpcominMovies> upcomingMovies(String apiKey) async {
+    UpcominMovies parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = UpcominMovies.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = await _netWorkCliet.get(
+      '/movie/upcoming',
+      parser,
+      <String, dynamic>{
+        'api_key': apiKey,
+      },
+    );
+    return result;
+  }
+
   Future<TopRatedMovieResponce> topRatedMovies(String apiKey) async {
     TopRatedMovieResponce parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
@@ -39,8 +57,6 @@ class NewsApiClient {
       parser,
       <String, dynamic>{
         'api_key': apiKey,
-        // 'page': page.toString(),
-        // 'language': locale,
       },
     );
     return result;
@@ -58,8 +74,6 @@ class NewsApiClient {
       parser,
       <String, dynamic>{
         'api_key': apiKey,
-        // 'page': page.toString(),
-        // 'language': locale,
       },
     );
     return result;

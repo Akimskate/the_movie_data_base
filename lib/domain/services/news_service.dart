@@ -3,6 +3,7 @@ import 'package:moviedb/domain/api_client/news_api_client.dart';
 import 'package:moviedb/domain/entity/top_rated_movies.dart';
 import 'package:moviedb/domain/entity/top_rated_tv_responce.dart';
 import 'package:moviedb/domain/entity/trending_responce.dart';
+import 'package:moviedb/domain/entity/upcoming_movies.dart';
 
 class NewsService {
   final _newsApiClient = NewsApiClient();
@@ -19,6 +20,10 @@ class NewsService {
 
   Future<TopRatedTVResponce> topRatedTVShow() async =>
       _newsApiClient.topRatedTVShow(
+        Configuration.apiKey,
+      );
+
+  Future<UpcominMovies> upcomingMovies() async => _newsApiClient.upcomingMovies(
         Configuration.apiKey,
       );
 }

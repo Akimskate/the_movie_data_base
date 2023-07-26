@@ -8,13 +8,13 @@ part of 'upcoming_movies.dart';
 
 UpcominMovies _$UpcominMoviesFromJson(Map<String, dynamic> json) =>
     UpcominMovies(
-      Dates.fromJson(json['dates'] as Map<String, dynamic>),
-      json['page'] as int,
-      (json['results'] as List<dynamic>)
+      dates: Dates.fromJson(json['dates'] as Map<String, dynamic>),
+      page: json['page'] as int,
+      results: (json['results'] as List<dynamic>)
           .map((e) => Results.fromJson(e as Map<String, dynamic>))
           .toList(),
-      json['total_pages'] as int,
-      json['total_results'] as int,
+      totalPages: json['total_pages'] as int,
+      totalResults: json['total_results'] as int,
     );
 
 Map<String, dynamic> _$UpcominMoviesToJson(UpcominMovies instance) =>

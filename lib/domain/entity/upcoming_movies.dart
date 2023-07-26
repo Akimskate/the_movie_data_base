@@ -10,13 +10,13 @@ class UpcominMovies {
   final int totalPages;
   final int totalResults;
 
-  UpcominMovies(
-    this.dates,
-    this.page,
-    this.results,
-    this.totalPages,
-    this.totalResults,
-  );
+  UpcominMovies({
+    required this.dates,
+    required this.page,
+    required this.results,
+    required this.totalPages,
+    required this.totalResults,
+  });
   factory UpcominMovies.fromJson(Map<String, dynamic> json) =>
       _$UpcominMoviesFromJson(json);
 

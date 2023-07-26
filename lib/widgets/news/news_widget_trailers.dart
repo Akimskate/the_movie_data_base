@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviedb/domain/api_client/image_downloader.dart';
+import 'package:moviedb/domain/api_client/movie_api_client.dart';
+import 'package:moviedb/navigation/main_navigation.dart';
+import 'package:moviedb/navigation/navigation_helper.dart';
 import 'package:moviedb/resources/resources.dart';
+import 'package:moviedb/widgets/news/news_cubit.dart';
 
-class NewsWidgetTrailers extends StatefulWidget {
+class NewsWidgetTrailers extends StatelessWidget {
   const NewsWidgetTrailers({Key? key}) : super(key: key);
 
   @override
-  _NewsWidgetTrailersState createState() => _NewsWidgetTrailersState();
-}
-
-class _NewsWidgetTrailersState extends State<NewsWidgetTrailers> {
-  @override
   Widget build(BuildContext context) {
+    final cubit = context.watch<TrendingListCubit>();
     return DecoratedBox(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -46,9 +48,15 @@ class _NewsWidgetTrailersState extends State<NewsWidgetTrailers> {
               builder: (BuildContext context, BoxConstraints constraints) {
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 10,
+                  itemCount: cubit.state.upcomingMovieTrailers.length,
                   itemExtent: constraints.maxWidth * 1,
                   itemBuilder: (BuildContext context, int index) {
+                    final upcomingMovieItem =
+                        cubit.state.upcomingMovieTrailers[index];
+                    final backdroPath = upcomingMovieItem.backDropPath;
+                    final title = upcomingMovieItem.title;
+                    //final releaseDate = upcomingMovieItem.releaseDate;
+
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
@@ -57,30 +65,40 @@ class _NewsWidgetTrailersState extends State<NewsWidgetTrailers> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 20),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: const Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Image(
-                                        image: AssetImage(AppImages.img),
-                                      ),
-                                      DecoratedBox(
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black,
-                                                blurRadius: 20,
-                                                spreadRadius: -20),
-                                          ],
-                                        ),
-                                        child: Icon(
-                                          Icons.play_arrow_rounded,
-                                          color: Colors.white,
-                                          size: 80,
-                                        ),
-                                      )
-                                    ],
+                                child: InkWell(
+                                  onTap: () {
+                                    NavigationHelper.navigateToMovieTrailer(
+                                        context, upcomingMovieItem.id);
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        backdroPath != null
+                                            ? Image.network(
+                                                ImageDownloader.imageUrl(
+                                                    backdroPath),
+                                                width: 350,
+                                              )
+                                            : const SizedBox.shrink(),
+                                        const DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black,
+                                                  blurRadius: 20,
+                                                  spreadRadius: -20),
+                                            ],
+                                          ),
+                                          child: Icon(
+                                            Icons.play_arrow_rounded,
+                                            color: Colors.white,
+                                            size: 80,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -97,24 +115,19 @@ class _NewsWidgetTrailersState extends State<NewsWidgetTrailers> {
                               ),
                             ],
                           ),
-                          const Text(
-                            'Elite',
-                            maxLines: 2,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const Padding(
-                            padding:
-                                EdgeInsets.only(left: 10, top: 10, right: 10),
+                          InkWell(
                             child: Text(
-                              'Elite Season 4 | Trailter | Netflix',
-                              style: TextStyle(
+                              title ?? '',
+                              maxLines: 2,
+                              style: const TextStyle(
+                                fontSize: 20,
                                 color: Colors.white,
-                                fontSize: 17,
                               ),
                             ),
+                            onTap: () {
+                              NavigationHelper.navigateToMovieDetails(
+                                  context, upcomingMovieItem.id);
+                            },
                           ),
                         ],
                       ),

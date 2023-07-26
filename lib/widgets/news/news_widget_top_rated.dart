@@ -182,9 +182,10 @@ class _TopRatedHorizontalResults extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: SizedBox(
-                                height: 225,
-                                width: 150,
-                                child: Stack(children: [
+                              height: 225,
+                              width: 150,
+                              child: Stack(
+                                children: [
                                   posterPath != null
                                       ? Image.network(
                                           ImageDownloader.imageUrl(posterPath),
@@ -208,7 +209,9 @@ class _TopRatedHorizontalResults extends StatelessWidget {
                                           );
                                         }
                                       }),
-                                ])),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                         Positioned(
