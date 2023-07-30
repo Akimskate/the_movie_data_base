@@ -7,6 +7,7 @@ import 'package:moviedb/domain/blocs/movie_details_bloc/movie_details_bloc.dart'
 import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
 import 'package:moviedb/domain/blocs/movie_list_bloc/movie_list_state.dart';
 import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
+import 'package:moviedb/domain/blocs/search_bloc/search_bloc.dart';
 import 'package:moviedb/domain/blocs/tv_show_details_bloc/tv_show_details_bloc.dart';
 import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_bloc.dart';
 import 'package:moviedb/domain/blocs/tv_show_list_bloc/tv_show_list_state.dart';
@@ -25,7 +26,7 @@ import 'package:moviedb/widgets/movie_list/movie_list_widget.dart';
 import 'package:moviedb/widgets/movie_trailers/movie_trailer_widget.dart';
 import 'package:moviedb/widgets/news/news_cubit.dart';
 import 'package:moviedb/widgets/news/news_widget.dart';
-import 'package:moviedb/widgets/news/news_widget_trendings.dart';
+import 'package:moviedb/widgets/search_results/search_results.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_cubit.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_cubit.dart';
@@ -47,7 +48,10 @@ class ScreenFactory {
   }
 
   Widget makeAuth() {
-    final authBloc = _authBloc ?? AuthBloc(AuthCheckStatusInProgressState());
+    final authBloc = _authBloc ??
+        AuthBloc(
+          AuthCheckStatusInProgressState(),
+        );
     return BlocProvider<AuthViewCubit>(
       create: (_) => AuthViewCubit(
         AuthViewCubitFormFillInProgressState(),
@@ -59,6 +63,19 @@ class ScreenFactory {
 
   Widget makeMainScreen() {
     return MainScreenWidget();
+  }
+
+  Widget makeSearchResults(String searchQuery) {
+    final searchBloc = SearchBloc(
+      SearchState.initial(),
+      MovieService(),
+      ShowService(),
+    );
+
+    return BlocProvider<SearchBloc>(
+      create: (_) => searchBloc,
+      child: SearchResult(searchQuery: searchQuery),
+    );
   }
 
   Widget makeMovieDetails(int movieId) {

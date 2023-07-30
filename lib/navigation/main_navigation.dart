@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/domain/factoryes/screen_factory.dart';
 
-
 abstract class MainNavigationRouteNames {
   static const loaderWidget = '/';
   static const auth = 'auth';
@@ -9,6 +8,7 @@ abstract class MainNavigationRouteNames {
   static const movieDetails = '/main_screen/movie_details';
   static const movieTrailerWidget = '/main_screen/movie_details/trailer';
   static const showDetails = '/main_screen/show_details';
+  static const showSearchResults = '/main_screen/show_search_result';
 }
 
 class MainNavigation {
@@ -40,13 +40,20 @@ class MainNavigation {
         return MaterialPageRoute(
           builder: (_) => _screenFactory.makeShowDetails(showId),
         );
+      case MainNavigationRouteNames.showSearchResults:
+        final arguments = settings.arguments;
+        final searchQuerry = arguments is String ? arguments : '';
+        return MaterialPageRoute(
+          builder: (_) => _screenFactory.makeSearchResults(searchQuerry),
+        );
       default:
         const widget = Text('Navigation Error!!!!!!!!');
         return MaterialPageRoute(builder: (context) => widget);
     }
   }
+
   static void resetNavigation(BuildContext context) {
     Navigator.of(context).pushNamedAndRemoveUntil(
         MainNavigationRouteNames.loaderWidget, (route) => false);
-  } 
+  }
 }

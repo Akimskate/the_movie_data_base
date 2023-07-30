@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
-import 'package:moviedb/domain/api_client/movie_api_client.dart';
-import 'package:moviedb/navigation/main_navigation.dart';
 import 'package:moviedb/navigation/navigation_helper.dart';
 import 'package:moviedb/resources/resources.dart';
 import 'package:moviedb/widgets/news/news_cubit.dart';
 
-class NewsWidgetTrailers extends StatelessWidget {
+class NewsWidgetTrailers extends StatefulWidget {
   const NewsWidgetTrailers({Key? key}) : super(key: key);
 
   @override
+  State<NewsWidgetTrailers> createState() => _NewsWidgetTrailersState();
+}
+
+class _NewsWidgetTrailersState extends State<NewsWidgetTrailers>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final cubit = context.watch<TrendingListCubit>();
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -55,7 +63,6 @@ class NewsWidgetTrailers extends StatelessWidget {
                         cubit.state.upcomingMovieTrailers[index];
                     final backdroPath = upcomingMovieItem.backDropPath;
                     final title = upcomingMovieItem.title;
-                    //final releaseDate = upcomingMovieItem.releaseDate;
 
                     return Padding(
                       padding: const EdgeInsets.all(10.0),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/navigation/main_navigation.dart';
+import 'package:moviedb/navigation/navigation_helper.dart';
 import 'package:moviedb/widgets/tvshows/tv_shows_list_cubit.dart';
 import 'package:provider/provider.dart';
 
@@ -148,18 +148,12 @@ class _MovieListRowWidget extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(10),
-              onTap: () => _onShowTap(context, shows.id),
+              onTap: () =>
+                  NavigationHelper.navigateToShowDetails(context, shows.id),
             ),
           )
         ],
       ),
-    );
-  }
-
-  void _onShowTap(BuildContext context, int showId) {
-    Navigator.of(context).pushNamed(
-      MainNavigationRouteNames.showDetails,
-      arguments: showId,
     );
   }
 }

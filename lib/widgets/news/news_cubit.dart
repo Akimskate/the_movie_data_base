@@ -38,13 +38,11 @@ class UpcomingMovieListRowData {
   final String? backDropPath;
   final String? title;
   final String? releaseDate;
-  //final String? youtubeKey;
   UpcomingMovieListRowData({
     required this.id,
     this.backDropPath,
     this.title,
     this.releaseDate,
-    //this.youtubeKey,
   });
 }
 
@@ -228,17 +226,11 @@ class TrendingListCubit extends Cubit<TrendingListCubitState> {
   }
 
   UpcomingMovieListRowData _makeUpcomingMoviesTrailersRowData(Results movie) {
-    // String? youtubeKey;
-    // if (movie.videos.results.isNotEmpty) {
-    //   youtubeKey = movie.videos.results[0].key;
-    // }
-
     return UpcomingMovieListRowData(
       id: movie.id,
       backDropPath: movie.backdropPath,
       title: movie.title,
       releaseDate: movie.releaseDate,
-      // youtubeKey: youtubeKey,
     );
   }
 

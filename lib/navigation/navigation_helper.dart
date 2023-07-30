@@ -10,6 +10,13 @@ class NavigationHelper {
     );
   }
 
+  static void navigateToShowDetails(BuildContext context, int showId) {
+    Navigator.of(context).pushNamed(
+      MainNavigationRouteNames.showDetails,
+      arguments: showId,
+    );
+  }
+
   static void navigateToMovieTrailer(BuildContext context, int movieId) async {
     final moiveDetails = await MovieApiClient().movieDetails(movieId, 'en-EN');
     final youtubeKey = moiveDetails.videos.results[0].key;

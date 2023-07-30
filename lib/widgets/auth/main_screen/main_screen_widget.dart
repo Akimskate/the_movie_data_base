@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviedb/domain/blocs/search_bloc/search_bloc.dart';
 import 'package:moviedb/domain/blocs/tab_bloc/tab_cubit.dart';
 import 'package:moviedb/domain/factoryes/screen_factory.dart';
 import 'package:moviedb/domain/services/auth_service.dart';
@@ -28,7 +29,10 @@ class MainScreenWidget extends StatelessWidget {
             icon: const Image(
               image: AssetImage(AppImages.imdbLogo),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const MainScreenWidget()));
+            },
             iconSize: 60,
           ),
           centerTitle: true,

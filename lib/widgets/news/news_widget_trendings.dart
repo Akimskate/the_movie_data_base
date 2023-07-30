@@ -4,6 +4,7 @@ import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/elements/custom_toggle_swich.dart';
 import 'package:moviedb/navigation/main_navigation.dart';
+import 'package:moviedb/navigation/navigation_helper.dart';
 import 'package:moviedb/utils/get_rating_color.dart';
 import 'package:moviedb/widgets/news/news_cubit.dart';
 import 'package:provider/provider.dart';
@@ -16,10 +17,13 @@ class NewsWidgetTrandings extends StatefulWidget {
 }
 
 class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
   late Animation<double> _animation;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -61,6 +65,7 @@ class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings>
   String selectedTimeWindow = 'day';
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final cubit = context.watch<TrendingListCubit>();
 
     return Column(
@@ -169,11 +174,13 @@ class _TrendingHorizontalResults extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10),
                                       onTap: () {
                                         trending.mediaType == 'movie'
-                                            ? _onMoviePosterTap(
+                                            ? NavigationHelper
+                                                .navigateToMovieDetails(
                                                 context,
                                                 trending.id,
                                               )
-                                            : _onTVShowPosterTap(
+                                            : NavigationHelper
+                                                .navigateToShowDetails(
                                                 context,
                                                 trending.id,
                                               );

@@ -49,6 +49,7 @@ class _ToggleButtonState extends State<ToggleButton>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final isSelected1 = widget.selectedValue == widget.button1Value;
     final isSelected2 = widget.selectedValue == widget.button2Value;
 

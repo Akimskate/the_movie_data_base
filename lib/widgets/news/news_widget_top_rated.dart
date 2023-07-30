@@ -17,10 +17,13 @@ class NewsWidgetTopRated extends StatefulWidget {
 }
 
 class _NewsWidgetTopRatedState extends State<NewsWidgetTopRated>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
   late Animation<double> _animation;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -67,6 +70,7 @@ class _NewsWidgetTopRatedState extends State<NewsWidgetTopRated>
   String selectedMediaType = 'movie';
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final cubit = context.watch<TrendingListCubit>();
     final selectedMediaType =
         context.select((NewsBloc bloc) => bloc.state.selectedMediaType);
