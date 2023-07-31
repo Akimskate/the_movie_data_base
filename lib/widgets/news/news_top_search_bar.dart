@@ -117,8 +117,8 @@ class _SearchField extends StatelessWidget {
                   ),
                   onPressed: () => {
                         cubit.add(FetchSearchResultsEvent(
-                          'en-EN',
-                          searchController.text,
+                          locale: 'en-EN',
+                          querry: searchController.text,
                         )),
                         Navigator.of(context).pushNamed(
                           MainNavigationRouteNames.showSearchResults,

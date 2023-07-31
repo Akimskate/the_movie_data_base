@@ -26,14 +26,16 @@ class _SearchResultState extends State<SearchResult> {
     super.didChangeDependencies();
 
     final locale = Localizations.localeOf(context);
-    final searchBloc = context.read<SearchBloc>();
-    searchBloc
-        .add(FetchSearchResultsEvent(locale.languageCode, widget.searchQuery));
+    final searchBloc = context.watch<SearchBloc>();
+    searchBloc.add(FetchSearchResultsEvent(
+      locale: locale.languageCode,
+      querry: widget.searchQuery,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    final searchBloc = context.watch<SearchBloc>();
+    final searchBloc = context.read<SearchBloc>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Results'),
@@ -65,7 +67,6 @@ class _SearchResultState extends State<SearchResult> {
                         child: Container(
                           alignment: Alignment.center,
                           height: 27,
-                          //width: 37,
                           decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.black,
@@ -79,7 +80,6 @@ class _SearchResultState extends State<SearchResult> {
                               searchBloc
                                   .state.movieSearchResultContainer.totalResults
                                   .toString(),
-                              // style: TextStyle(fontSize: 15,),
                             ),
                           ),
                         ),
@@ -105,7 +105,6 @@ class _SearchResultState extends State<SearchResult> {
                           child: Container(
                         alignment: Alignment.center,
                         height: 27,
-                        //width: 37,
                         decoration: BoxDecoration(
                             border: Border.all(
                               color: Colors.black,
@@ -132,7 +131,7 @@ class _SearchResultState extends State<SearchResult> {
               child: Stack(
                 children: [
                   const _MovieSearchResultListWidget(),
-                  _SearchWidget(),
+                  //_SearchWidget(),
                 ],
               ),
             ),
@@ -143,38 +142,44 @@ class _SearchResultState extends State<SearchResult> {
   }
 }
 
-class _SearchWidget extends StatelessWidget {
-  _SearchWidget({
-    Key? key,
-  }) : super(key: key);
+// class _SearchWidget extends StatelessWidget {
+//   _SearchWidget({
+//     Key? key,
+//   }) : super(key: key);
 
-  Timer? _debouncer;
+//   Timer? _debouncer;
 
-  @override
-  Widget build(BuildContext context) {
-    final searchBloc = context.read<SearchBloc>();
-    const _debounceDuration = Duration(milliseconds: 500);
+//   @override
+//   Widget build(BuildContext context) {
+//     final searchBloc = context.watch<SearchBloc>();
+//     const _debounceDuration = Duration(milliseconds: 500);
 
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: TextField(
-        onChanged: (searchQuery) {
-          _debouncer?.cancel();
-          _debouncer = Timer(_debounceDuration, () {
-            searchBloc.add(FetchSearchResultsEvent(
-                Localizations.localeOf(context).languageCode, searchQuery));
-          });
-        },
-        decoration: InputDecoration(
-          labelText: 'Search',
-          filled: true,
-          fillColor: Colors.white.withAlpha(235),
-          border: const OutlineInputBorder(),
-        ),
-      ),
-    );
-  }
-}
+//     return Padding(
+//       padding: const EdgeInsets.all(10.0),
+//       child: TextField(
+//         onSubmitted: (searchQuery) {
+//           _debouncer?.cancel();
+//           _debouncer = Timer(_debounceDuration, () {
+//             searchBloc.add(FetchSearchResultsEvent(
+//                 Localizations.localeOf(context).languageCode, searchQuery));
+//           });
+//           // onChanged: (searchQuery) {
+//           //   _debouncer?.cancel();
+//           //   _debouncer = Timer(_debounceDuration, () {
+//           //     searchBloc.add(FetchSearchResultsEvent(
+//           //         Localizations.localeOf(context).languageCode, searchQuery));
+//           //   });
+//         },
+//         decoration: InputDecoration(
+//           labelText: 'Search',
+//           filled: true,
+//           fillColor: Colors.white.withAlpha(235),
+//           border: const OutlineInputBorder(),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _MovieSearchResultListWidget extends StatelessWidget {
   const _MovieSearchResultListWidget({
@@ -188,7 +193,7 @@ class _MovieSearchResultListWidget extends StatelessWidget {
         final movieSearchResults = state.movieSearchResultContainer.movies;
         return ListView.builder(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.only(top: 70),
+          padding: const EdgeInsets.only(top: 10),
           itemCount: movieSearchResults.length,
           itemExtent: 163,
           itemBuilder: (BuildContext context, int index) {

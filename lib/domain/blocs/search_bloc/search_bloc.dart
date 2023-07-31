@@ -16,10 +16,17 @@ class FetchSearchResultsEvent extends SearchEvent {
   final String locale;
   final String querry;
 
-  FetchSearchResultsEvent(
-    this.locale,
-    this.querry,
-  );
+  FetchSearchResultsEvent({
+    required this.locale,
+    required this.querry,
+  });
+}
+
+class SearchResultListEventLoadNextPage extends SearchEvent {
+  final String locale;
+  SearchResultListEventLoadNextPage({
+    required this.locale,
+  });
 }
 
 // class MovieSearchResultContainer {
