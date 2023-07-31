@@ -33,18 +33,111 @@ class _SearchResultState extends State<SearchResult> {
 
   @override
   Widget build(BuildContext context) {
+    final searchBloc = context.watch<SearchBloc>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Results'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Stack(
-          children: [
-            const _MovieSearchResultListWidget(),
-            _SearchWidget(),
-          ],
-        ),
+      body: Column(
+        children: [
+          SizedBox(
+            //height: 3,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                            overlayColor: MaterialStateColor.resolveWith(
+                                (states) => Colors.transparent)),
+                        child: const Text(
+                          'Movies',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      IntrinsicWidth(
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 27,
+                          //width: 37,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 3.0, right: 3.0),
+                            child: Text(
+                              searchBloc
+                                  .state.movieSearchResultContainer.totalResults
+                                  .toString(),
+                              // style: TextStyle(fontSize: 15,),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                            overlayColor: MaterialStateColor.resolveWith(
+                                (states) => Colors.transparent)),
+                        child: const Text(
+                          'TV Shows',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      IntrinsicWidth(
+                          child: Container(
+                        alignment: Alignment.center,
+                        height: 27,
+                        //width: 37,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 3.0, right: 3.0),
+                          child: Text(searchBloc
+                              .state.showSearchResultContainer.totalResults
+                              .toString()),
+                        ),
+                      )),
+                    ],
+                  ),
+                ]),
+          ),
+          const Divider(
+            thickness: 1,
+            color: Colors.grey,
+          ),
+          Expanded(
+            child: Center(
+              child: Stack(
+                children: [
+                  const _MovieSearchResultListWidget(),
+                  _SearchWidget(),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
