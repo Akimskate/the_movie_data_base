@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/domain/blocs/search_bloc/search_bloc.dart';
 import 'package:moviedb/navigation/navigation_helper.dart';
+import 'package:moviedb/widgets/search_results/search_result_cubit.dart';
 
 class SearchResult extends StatefulWidget {
   final String searchQuery;
@@ -26,16 +27,15 @@ class _SearchResultState extends State<SearchResult> {
     super.didChangeDependencies();
 
     final locale = Localizations.localeOf(context);
-    final searchBloc = context.watch<SearchBloc>();
-    searchBloc.add(FetchSearchResultsEvent(
-      locale: locale.languageCode,
-      querry: widget.searchQuery,
-    ));
+    context
+        .read<SearchResultListCubit>()
+        .setupLocal(locale.languageCode, widget.searchQuery);
   }
 
   @override
   Widget build(BuildContext context) {
     final searchBloc = context.read<SearchBloc>();
+    final cubit = context.watch<SearchResultListCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Results'),
@@ -126,11 +126,11 @@ class _SearchResultState extends State<SearchResult> {
             thickness: 1,
             color: Colors.grey,
           ),
-          Expanded(
+          const Expanded(
             child: Center(
               child: Stack(
                 children: [
-                  const _MovieSearchResultListWidget(),
+                  _MovieSearchResultListWidget(),
                   //_SearchWidget(),
                 ],
               ),
@@ -188,19 +188,16 @@ class _MovieSearchResultListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, state) {
-        final movieSearchResults = state.movieSearchResultContainer.movies;
-        return ListView.builder(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.only(top: 10),
-          itemCount: movieSearchResults.length,
-          itemExtent: 163,
-          itemBuilder: (BuildContext context, int index) {
-            return _MovieListRowWidget(
-              index: index,
-            );
-          },
+    final cubit = context.watch<SearchResultListCubit>();
+    final movieSearchResults = cubit.state.moviesSearchResult;
+    return ListView.builder(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.only(top: 10),
+      itemCount: movieSearchResults.length,
+      itemExtent: 163,
+      itemBuilder: (BuildContext context, int index) {
+        return _MovieListRowWidget(
+          index: index,
         );
       },
     );
@@ -216,8 +213,9 @@ class _MovieListRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchBloc = context.watch<SearchBloc>();
-    final movie = searchBloc.state.movieSearchResultContainer.movies[index];
+    //final searchBloc = context.watch<SearchBloc>();
+    final cubit = context.watch<SearchResultListCubit>();
+    final movie = cubit.state.moviesSearchResult[index];
     final posterPath = movie.posterPath;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -259,10 +257,7 @@ class _MovieListRowWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        movie.releaseDate != null
-                            ? DateFormat('yyyy-MM-dd')
-                                .format(movie.releaseDate!)
-                            : 'N/A',
+                        movie.releaseDate,
                         style: const TextStyle(color: Colors.grey),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

@@ -26,6 +26,7 @@ import 'package:moviedb/widgets/movie_list/movie_list_widget.dart';
 import 'package:moviedb/widgets/movie_trailers/movie_trailer_widget.dart';
 import 'package:moviedb/widgets/news/news_cubit.dart';
 import 'package:moviedb/widgets/news/news_widget.dart';
+import 'package:moviedb/widgets/search_results/search_result_cubit.dart';
 import 'package:moviedb/widgets/search_results/search_results.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_cubit.dart';
 import 'package:moviedb/widgets/tv_show_details/tv_show_details_widget.dart';
@@ -72,9 +73,36 @@ class ScreenFactory {
       ShowService(),
     );
 
-    return BlocProvider<SearchBloc>(
-      create: (_) => searchBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SearchBloc>(
+          create: (_) => searchBloc,
+        ),
+        BlocProvider<SearchResultListCubit>(
+          create: (_) => SearchResultListCubit(searchResultBloc: searchBloc),
+        )
+      ],
       child: SearchResult(searchQuery: searchQuery),
+    );
+    //   create: (_) => SearchResultListCubit(
+    //     searchResultBloc: searchBloc,
+    //   ),
+
+    // );
+    // return BlocProvider<SearchBloc>(
+    //   create: (_) => searchBloc,
+    //   child: SearchResult(searchQuery: searchQuery),
+    // );
+  }
+
+  Widget makeMovieList() {
+    return BlocProvider<MovieListCubit>(
+      create: (_) => MovieListCubit(
+        movieListBloc: MovieListBloc(
+          const MovieListState.initial(),
+        ),
+      ),
+      child: const MovieListWidget(),
     );
   }
 
@@ -118,17 +146,6 @@ class ScreenFactory {
         BlocProvider<TrendingListCubit>.value(value: trendingListCubit),
       ],
       child: const NewsWidget(),
-    );
-  }
-
-  Widget makeMovieList() {
-    return BlocProvider<MovieListCubit>(
-      create: (_) => MovieListCubit(
-        movieListBloc: MovieListBloc(
-          const MovieListState.initial(),
-        ),
-      ),
-      child: const MovieListWidget(),
     );
   }
 
