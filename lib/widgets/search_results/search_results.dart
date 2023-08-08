@@ -20,7 +20,22 @@ class SearchResult extends StatefulWidget {
   State<SearchResult> createState() => _SearchResultState();
 }
 
-class _SearchResultState extends State<SearchResult> {
+class _SearchResultState extends State<SearchResult>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -33,74 +48,64 @@ class _SearchResultState extends State<SearchResult> {
 
   @override
   Widget build(BuildContext context) {
-    final searchBloc = context.read<SearchBloc>();
-    //final cubit = context.watch<SearchResultListCubit>();
+    final searchBloc = context.watch<SearchBloc>();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search Results'),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+        appBar: AppBar(
+          title: const Text('Search Results'),
+          centerTitle: true,
+        ),
+        body: Column(children: [
+          TabBar(controller: _tabController, tabs: [
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                            overlayColor: MaterialStateColor.resolveWith(
-                                (states) => Colors.transparent)),
-                        child: const Text(
-                          'Movies',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      IntrinsicWidth(
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 27,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 3.0, right: 3.0),
-                            child: Text(
-                              searchBloc
-                                  .state.movieSearchResultContainer.totalResults
-                                  .toString(),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
+                  const Text(
+                    'Movies',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
                   ),
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                            overlayColor: MaterialStateColor.resolveWith(
-                                (states) => Colors.transparent)),
-                        child: const Text(
-                          'TV Shows',
-                          style: TextStyle(
-                            fontSize: 18,
+                  IntrinsicWidth(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 27,
+                      decoration: BoxDecoration(
+                          border: Border.all(
                             color: Colors.black,
+                            width: 1,
                           ),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 3.0, right: 3.0),
+                        child: Text(
+                          searchBloc
+                              .state.movieSearchResultContainer.totalResults
+                              .toString(),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
-                      IntrinsicWidth(
-                          child: Container(
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Tab(
+              child: Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      'TV Shows',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    ),
+                    IntrinsicWidth(
+                      child: Container(
                         alignment: Alignment.center,
                         height: 27,
                         decoration: BoxDecoration(
@@ -111,32 +116,30 @@ class _SearchResultState extends State<SearchResult> {
                             borderRadius: BorderRadius.circular(20)),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 3.0, right: 3.0),
-                          child: Text(searchBloc
-                              .state.showSearchResultContainer.totalResults
-                              .toString()),
+                          child: Text(
+                            searchBloc
+                                .state.showSearchResultContainer.totalResults
+                                .toString(),
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         ),
-                      )),
-                    ],
-                  ),
-                ]),
-          ),
-          const Divider(
-            thickness: 1,
-            color: Colors.grey,
-          ),
-          Expanded(
-            child: Center(
-              child: Stack(
-                children: [
-                  const _MovieSearchResultListWidget(),
-                  _SearchWidget(),
-                ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+          ]),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                _MovieSearchResultListWidget(),
+                _ShowSearchResultListWidget(),
+              ],
+            ),
           ),
-        ],
-      ),
-    );
+        ]));
   }
 }
 
@@ -189,21 +192,55 @@ class _MovieSearchResultListWidget extends StatelessWidget {
     final searchBloc = context.watch<SearchBloc>();
     final cubit = context.watch<SearchResultListCubit>();
     final movieSearchResults = cubit.state.moviesSearchResult;
-    return ListView.builder(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: const EdgeInsets.only(top: 70),
-      itemCount: movieSearchResults.length,
-      itemExtent: 163,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == movieSearchResults.length - 3) {
-          searchBloc.add(SearchResultListEventLoadNextPage(
-              locale: Localizations.localeOf(context).languageCode));
-        }
-        return _MovieListRowWidget(
-          index: index,
-        );
-      },
-    );
+    return Stack(children: [
+      ListView.builder(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.only(top: 70),
+        itemCount: movieSearchResults.length,
+        itemExtent: 163,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == movieSearchResults.length - 3) {
+            searchBloc.add(SearchResultListEventLoadNextPage(
+                locale: Localizations.localeOf(context).languageCode));
+          }
+          return _MovieListRowWidget(
+            index: index,
+          );
+        },
+      ),
+      _SearchWidget(),
+    ]);
+  }
+}
+
+class _ShowSearchResultListWidget extends StatelessWidget {
+  const _ShowSearchResultListWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final searchBloc = context.watch<SearchBloc>();
+    final cubit = context.watch<SearchResultListCubit>();
+    final showSearchResults = cubit.state.showSearchResult;
+    return Stack(children: [
+      ListView.builder(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.only(top: 70),
+        itemCount: showSearchResults.length,
+        itemExtent: 163,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == showSearchResults.length - 3) {
+            searchBloc.add(SearchResultListEventLoadNextPage(
+                locale: Localizations.localeOf(context).languageCode));
+          }
+          return _ShowListRowWidget(
+            index: index,
+          );
+        },
+      ),
+      _SearchWidget(),
+    ]);
   }
 }
 
@@ -216,7 +253,6 @@ class _MovieListRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final searchBloc = context.watch<SearchBloc>();
     final cubit = context.watch<SearchResultListCubit>();
     final movie = cubit.state.moviesSearchResult[index];
     final posterPath = movie.posterPath;
@@ -283,6 +319,89 @@ class _MovieListRowWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               onTap: () =>
                   NavigationHelper.navigateToMovieDetails(context, movie.id),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _ShowListRowWidget extends StatelessWidget {
+  final int index;
+  const _ShowListRowWidget({
+    Key? key,
+    required this.index,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.watch<SearchResultListCubit>();
+    final show = cubit.state.showSearchResult[index];
+    final posterPath = show.posterPath;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black.withOpacity(0.2)),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 25,
+                  offset: const Offset(0, 3),
+                )
+              ],
+            ),
+            clipBehavior: Clip.hardEdge,
+            child: Row(
+              children: [
+                posterPath != null
+                    ? Image.network(
+                        ImageDownloader.imageUrl(posterPath),
+                        width: 95,
+                      )
+                    : const SizedBox.shrink(),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      Text(
+                        show.title,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        show.releaseDate,
+                        style: const TextStyle(color: Colors.grey),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        show.overview,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () =>
+                  NavigationHelper.navigateToShowDetails(context, show.id),
             ),
           )
         ],
