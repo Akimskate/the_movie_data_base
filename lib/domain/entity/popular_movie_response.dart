@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
+
 import 'package:moviedb/domain/entity/movie.dart';
 
 part 'popular_movie_response.g.dart';
@@ -22,4 +24,18 @@ class PopularMovieResponse {
       _$PopularMovieResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$PopularMovieResponseToJson(this);
+
+  PopularMovieResponse copyWith({
+    int? page,
+    List<Movie>? movies,
+    int? totalResults,
+    int? totalPages,
+  }) {
+    return PopularMovieResponse(
+      page: page ?? this.page,
+      movies: movies ?? this.movies,
+      totalResults: totalResults ?? this.totalResults,
+      totalPages: totalPages ?? this.totalPages,
+    );
+  }
 }

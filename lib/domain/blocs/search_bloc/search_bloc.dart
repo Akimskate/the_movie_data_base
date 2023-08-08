@@ -184,6 +184,78 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc(SearchState initialState, this._movieService, this._showService)
       : super(initialState) {
     on<FetchSearchResultsEvent>(_handleSearchMovieEvent);
+    on<SearchResultListEventLoadNextPage>(onSearchEventLoadNextPageEvent);
+  }
+
+  Future<SearchState> _loadNextPage(
+    PopularMovieResponse movieSearchResultContainer,
+    PopularTvShowResponse showSearchResultContainer,
+    Future<PopularMovieResponse> Function(int) movieLoader,
+    Future<PopularTvShowResponse> Function(int) showLoader,
+  ) async {
+    final nextMoviePage = movieSearchResultContainer.page + 1;
+    final nextShowPage = showSearchResultContainer.page + 1;
+    final resultMovies = await movieLoader(nextMoviePage);
+    final resultShow = await showLoader(nextShowPage);
+    //final movies = movieSearchResultContainer.movies..addAll(resultMovies.movies);
+    final newMovieList = [
+      ...movieSearchResultContainer.movies,
+      ...resultMovies.movies,
+    ];
+
+    final newShowList = [
+      ...showSearchResultContainer.tvShows,
+      ...resultShow.tvShows,
+    ];
+
+    final newMovieSearchResultContainer = movieSearchResultContainer.copyWith(
+      movies: newMovieList,
+      page: nextMoviePage,
+    );
+
+    final newShowSearchResultContainer = showSearchResultContainer.copyWith(
+      tvShows: newShowList,
+      page: nextShowPage,
+    );
+
+    final newSearchResultContainer = state.copyWith(
+      movieSearchResultContainer: newMovieSearchResultContainer,
+      showSearchResultContainer: newShowSearchResultContainer,
+      searchQuerry: state.searchQuerry,
+    );
+
+    return newSearchResultContainer;
+  }
+
+  Future<void> onSearchEventLoadNextPageEvent(
+    SearchResultListEventLoadNextPage event,
+    Emitter<SearchState> emit,
+  ) async {
+    final container = await _loadNextPage(
+      state.movieSearchResultContainer,
+      state.showSearchResultContainer,
+      (nextPage) async {
+        final result = await _movieService.searchMovie(
+          nextPage,
+          event.locale,
+          state.searchQuerry,
+        );
+        return result;
+      },
+      (nextPage) async {
+        final result = await _showService.searchTvShow(
+          nextPage,
+          event.locale,
+          state.searchQuerry,
+        );
+        return result;
+      },
+    );
+    final newState = state.copyWith(
+        movieSearchResultContainer: container.movieSearchResultContainer,
+        showSearchResultContainer: container.showSearchResultContainer,
+        searchQuerry: state.searchQuerry);
+    emit(newState);
   }
 
   void _handleSearchMovieEvent(

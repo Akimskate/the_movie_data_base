@@ -84,15 +84,6 @@ class ScreenFactory {
       ],
       child: SearchResult(searchQuery: searchQuery),
     );
-    //   create: (_) => SearchResultListCubit(
-    //     searchResultBloc: searchBloc,
-    //   ),
-
-    // );
-    // return BlocProvider<SearchBloc>(
-    //   create: (_) => searchBloc,
-    //   child: SearchResult(searchQuery: searchQuery),
-    // );
   }
 
   Widget makeMovieList() {

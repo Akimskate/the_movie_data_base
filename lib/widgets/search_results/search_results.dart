@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/domain/blocs/search_bloc/search_bloc.dart';
@@ -35,7 +34,7 @@ class _SearchResultState extends State<SearchResult> {
   @override
   Widget build(BuildContext context) {
     final searchBloc = context.read<SearchBloc>();
-    final cubit = context.watch<SearchResultListCubit>();
+    //final cubit = context.watch<SearchResultListCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Results'),
@@ -44,7 +43,6 @@ class _SearchResultState extends State<SearchResult> {
       body: Column(
         children: [
           SizedBox(
-            //height: 3,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -126,12 +124,12 @@ class _SearchResultState extends State<SearchResult> {
             thickness: 1,
             color: Colors.grey,
           ),
-          const Expanded(
+          Expanded(
             child: Center(
               child: Stack(
                 children: [
-                  _MovieSearchResultListWidget(),
-                  //_SearchWidget(),
+                  const _MovieSearchResultListWidget(),
+                  _SearchWidget(),
                 ],
               ),
             ),
@@ -142,44 +140,44 @@ class _SearchResultState extends State<SearchResult> {
   }
 }
 
-// class _SearchWidget extends StatelessWidget {
-//   _SearchWidget({
-//     Key? key,
-//   }) : super(key: key);
+class _SearchWidget extends StatelessWidget {
+  _SearchWidget({
+    Key? key,
+  }) : super(key: key);
 
-//   Timer? _debouncer;
+  Timer? _debouncer;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final searchBloc = context.watch<SearchBloc>();
-//     const _debounceDuration = Duration(milliseconds: 500);
+  @override
+  Widget build(BuildContext context) {
+    final searchBloc = context.watch<SearchBloc>();
+    const _debounceDuration = Duration(milliseconds: 500);
 
-//     return Padding(
-//       padding: const EdgeInsets.all(10.0),
-//       child: TextField(
-//         onSubmitted: (searchQuery) {
-//           _debouncer?.cancel();
-//           _debouncer = Timer(_debounceDuration, () {
-//             searchBloc.add(FetchSearchResultsEvent(
-//                 Localizations.localeOf(context).languageCode, searchQuery));
-//           });
-//           // onChanged: (searchQuery) {
-//           //   _debouncer?.cancel();
-//           //   _debouncer = Timer(_debounceDuration, () {
-//           //     searchBloc.add(FetchSearchResultsEvent(
-//           //         Localizations.localeOf(context).languageCode, searchQuery));
-//           //   });
-//         },
-//         decoration: InputDecoration(
-//           labelText: 'Search',
-//           filled: true,
-//           fillColor: Colors.white.withAlpha(235),
-//           border: const OutlineInputBorder(),
-//         ),
-//       ),
-//     );
-//   }
-// }
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: TextField(
+        onChanged: (searchQuery) {
+          _debouncer?.cancel();
+          if (searchQuery.isNotEmpty) {
+            _debouncer = Timer(_debounceDuration, () {
+              searchBloc.add(FetchSearchResultsEvent(
+                locale: Localizations.localeOf(context).languageCode,
+                querry: searchQuery,
+              ));
+            });
+          } else {
+            return;
+          }
+        },
+        decoration: InputDecoration(
+          labelText: 'Search',
+          filled: true,
+          fillColor: Colors.white.withAlpha(235),
+          border: const OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+}
 
 class _MovieSearchResultListWidget extends StatelessWidget {
   const _MovieSearchResultListWidget({
@@ -188,14 +186,19 @@ class _MovieSearchResultListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final searchBloc = context.watch<SearchBloc>();
     final cubit = context.watch<SearchResultListCubit>();
     final movieSearchResults = cubit.state.moviesSearchResult;
     return ListView.builder(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 70),
       itemCount: movieSearchResults.length,
       itemExtent: 163,
       itemBuilder: (BuildContext context, int index) {
+        if (index == movieSearchResults.length - 3) {
+          searchBloc.add(SearchResultListEventLoadNextPage(
+              locale: Localizations.localeOf(context).languageCode));
+        }
         return _MovieListRowWidget(
           index: index,
         );
