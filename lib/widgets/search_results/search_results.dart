@@ -172,7 +172,7 @@ class _SearchWidget extends StatelessWidget {
           }
         },
         decoration: InputDecoration(
-          labelText: 'Search',
+          labelText: 'Search...',
           filled: true,
           fillColor: Colors.white.withAlpha(235),
           border: const OutlineInputBorder(),
