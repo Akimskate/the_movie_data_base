@@ -171,7 +171,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     Emitter<NewsState> emit,
   ) async {
     try {
-      print('Fetching top rated ${event.selectedMediaType}...'); // Debug log
       emit(state.copyWith(
           isLoading: true, selectedMediaType: event.selectedMediaType));
       if (event.selectedMediaType == 'movies') {
@@ -187,12 +186,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           isLoading: false,
         ));
       }
-      print(
-          'Top rated ${event.selectedMediaType} fetched successfully.'); // Debug log
     } catch (e) {
       emit(state.copyWith(isLoading: false));
-      print(
-          'Error fetching top rated ${event.selectedMediaType}: $e'); // Debug log
     }
   }
 }

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -144,14 +143,13 @@ class _SearchResultState extends State<SearchResult>
 }
 
 class _SearchWidget extends StatelessWidget {
-  _SearchWidget({
+  const _SearchWidget({
     Key? key,
   }) : super(key: key);
 
-  Timer? _debouncer;
-
   @override
   Widget build(BuildContext context) {
+    Timer? _debouncer;
     final searchBloc = context.watch<SearchBloc>();
     const _debounceDuration = Duration(milliseconds: 500);
 
@@ -208,7 +206,7 @@ class _MovieSearchResultListWidget extends StatelessWidget {
           );
         },
       ),
-      _SearchWidget(),
+      const _SearchWidget(),
     ]);
   }
 }
@@ -239,7 +237,7 @@ class _ShowSearchResultListWidget extends StatelessWidget {
           );
         },
       ),
-      _SearchWidget(),
+      const _SearchWidget(),
     ]);
   }
 }

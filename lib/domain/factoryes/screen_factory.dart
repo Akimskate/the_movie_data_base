@@ -63,7 +63,7 @@ class ScreenFactory {
   }
 
   Widget makeMainScreen() {
-    return MainScreenWidget();
+    return const MainScreenWidget();
   }
 
   Widget makeSearchResults(String searchQuery) {

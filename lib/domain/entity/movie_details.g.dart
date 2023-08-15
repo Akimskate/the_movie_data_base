@@ -84,7 +84,7 @@ Map<String, dynamic> _$MovieDetailsToJson(MovieDetails instance) =>
     };
 
 BelongsToCollection _$BelongsToCollectionFromJson(Map<String, dynamic> json) =>
-    BelongsToCollection();
+    const BelongsToCollection();
 
 Map<String, dynamic> _$BelongsToCollectionToJson(
         BelongsToCollection instance) =>

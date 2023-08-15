@@ -3,7 +3,6 @@ import 'package:moviedb/domain/api_client/image_downloader.dart';
 import 'package:moviedb/domain/blocs/news_bloc/news_bloc.dart';
 import 'package:moviedb/elements/circular_progress_widget.dart';
 import 'package:moviedb/elements/custom_toggle_swich.dart';
-import 'package:moviedb/navigation/main_navigation.dart';
 import 'package:moviedb/navigation/navigation_helper.dart';
 import 'package:moviedb/utils/get_rating_color.dart';
 import 'package:moviedb/widgets/news/news_cubit.dart';
@@ -238,18 +237,4 @@ class _TrendingHorizontalResults extends StatelessWidget {
       ),
     );
   }
-}
-
-void _onMoviePosterTap(BuildContext context, int movieId) {
-  Navigator.of(context).pushNamed(
-    MainNavigationRouteNames.movieDetails,
-    arguments: movieId,
-  );
-}
-
-void _onTVShowPosterTap(BuildContext context, int showId) {
-  Navigator.of(context).pushNamed(
-    MainNavigationRouteNames.showDetails,
-    arguments: showId,
-  );
 }
