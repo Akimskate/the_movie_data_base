@@ -13,36 +13,27 @@ class NewsTopSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SearchBloc>(
-      create: (context) =>
-          SearchBloc(SearchState.initial(), MovieService(), ShowService()),
+      create: (context) => SearchBloc(SearchState.initial(), MovieService(), ShowService()),
       child: Container(
         decoration: BoxDecoration(
           image: const DecorationImage(
-              opacity: 0.9,
-              image: AssetImage(AppImages.topNewsSearchBarBackground),
-              fit: BoxFit.cover),
+              opacity: 0.9, image: AssetImage(AppImages.topNewsSearchBarBackground), fit: BoxFit.cover),
           color: Colors.black.withOpacity(1),
         ),
         height: 250,
         child: const Stack(children: [
           Padding(
-            padding: EdgeInsets.only(left: 18, top: 20),
+            padding: EdgeInsets.only(left: 18, top: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Welcome.',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 45,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontSize: 45, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Millions of movies, TV shows and people to discover. Explore Now.',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: 15,

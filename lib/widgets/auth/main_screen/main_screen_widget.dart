@@ -26,13 +26,13 @@ class MainScreenWidget extends StatelessWidget {
         appBar: AppBar(
           title: IconButton(
             icon: const Image(
+              width: 60,
+              height: 35,
               image: AssetImage(AppImages.imdbLogo),
             ),
             onPressed: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const MainScreenWidget()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainScreenWidget()));
             },
-            iconSize: 60,
           ),
           centerTitle: true,
           actions: [
