@@ -21,7 +21,7 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 270,
+            height: 300,
             child: Scrollbar(
               child: _ActorWidget(),
             ),
@@ -46,8 +46,7 @@ class _ActorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data =
-        context.select((MovieDetailsCubit cubit) => cubit.data.actorData);
+    final data = context.select((MovieDetailsCubit cubit) => cubit.data.actorData);
 
     if (data.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
@@ -93,9 +92,7 @@ class _ActorItemListWidget extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           child: Column(
             children: [
-              profilePath != null
-                  ? Image.network(ImageDownloader.imageUrl(profilePath))
-                  : const SizedBox.shrink(),
+              profilePath != null ? Image.network(ImageDownloader.imageUrl(profilePath)) : const SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
